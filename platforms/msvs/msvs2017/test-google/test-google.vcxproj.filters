@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="tests">
+      <UniqueIdentifier>{6ba64409-310d-4e50-959a-373857c02f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\PS">
+      <UniqueIdentifier>{22033d3d-bd51-4dae-b5b6-bd35ee7fc25d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\test\gtest\test_polystyrene\baseline.h">
+      <Filter>tests\PS</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
