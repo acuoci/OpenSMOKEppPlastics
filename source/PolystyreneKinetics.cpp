@@ -31,34 +31,32 @@ namespace opensmokepp::plastics
 
 	double PolystyreneKinetics::Rgas_ = 1.987;
 
+	PolystyreneKinetics::~PolystyreneKinetics()
+	{
+	}
+
 	PolystyreneKinetics::PolystyreneKinetics()
 	{
+		// ------------------------------------------------------------------------------------------------
+		// Default values from kinetics
+		// ------------------------------------------------------------------------------------------------
 		DefaultKineticConstants();
 
-		// Default values
-		delta_ = 0.;
-		is_delta_enabled_ = false;
+		// ------------------------------------------------------------------------------------------------
+		// Default values from initial distribution
+		// ------------------------------------------------------------------------------------------------
+		MWm_ = 104.;
+		MWp_ = 50000.;
 
 		is_lumping_enabled_ = true;
-		is_backbiting_enabled_ = true;
-		is_verbose_ = false;
-
-		MWm_ = 104.;
-		eff_ = 100.;
-
-		// ------------------------------------------------------------------------------------------------
-		// Weights for abstraction reactions
-		// ------------------------------------------------------------------------------------------------
-
-		fe1_ = 0.;
-		fe2_ = 1.;
-		fe3_ = 0.;
-
-		N_ = 0;
-		kd_ = 0;
-
 		lumping_step_ = 10;
 		lumping_start_ = 100;
+
+		// ------------------------------------------------------------------------------------------------
+		// Initialization
+		// ------------------------------------------------------------------------------------------------
+		N_ = 0;
+		kd_ = 0;
 
 		CCsr_ = 1.;
 		CCsa_ = 0.;
@@ -73,8 +71,13 @@ namespace opensmokepp::plastics
 		wdio_ = 0.;
 		wtot_ = 0.;
 
+		is_verbose_ = false;
 
+
+		// ------------------------------------------------------------------------------------------------
 		// Memory allocation
+		// ------------------------------------------------------------------------------------------------
+		
 		radbbp1_.resize(4); radbbp1_.setZero();
 		radbbp3_.resize(4); radbbp3_.setZero();
 		radbbo1_.resize(4); radbbo1_.setZero();
@@ -95,24 +98,29 @@ namespace opensmokepp::plastics
 		kd_ = kd;
 	}
 
-	double PolystyreneKinetics::SplittingCoefficient(const double T, const double P)
+	void PolystyreneKinetics::SetRightSideBetaScissions(const bool flag)
 	{
-		const double Tb = BoilingTemperature(kd_, P);
-
-		// Modulation interval (TODO)
-		double deltem = 34.;
-		if (P != 1.)
-			deltem = -32. / std::log(P);
-
-		double alpha = 0.5*(1. + (std::tanh((T - Tb) / deltem)) / std::tanh(1.));
-
-		if (alpha >= 1.)      alpha = 1.;
-		else if (alpha <= 0.) alpha = 0.;
-
-		return alpha;
+		is_delta_enabled_ = flag;
 	}
 
-	void PolystyreneKinetics::CalculateSharedSpecies(const double T, const double P)
+	void PolystyreneKinetics::SetBackBiting(const bool flag)
+	{
+		is_backbiting_enabled_ = flag;
+	}
+
+	void PolystyreneKinetics::SetRandomScissionEfficiency(const double efficiency)
+	{
+		eff_ = 1. / efficiency;
+	}
+
+	void PolystyreneKinetics::SetAbstractionReactionWeights(const std::vector<double> weights)
+	{
+		fe1_ = weights[0];
+		fe2_ = weights[1];
+		fe3_ = weights[2];
+	}
+
+	void PolystyreneKinetics::UpdateSharedSpecies(const double T, const double P)
 	{
 		const int L = static_cast<int>(std::pow(T / 136.*(1. - std::log(P) / 10.5), 2.) / 8.);
 
@@ -133,35 +141,6 @@ namespace opensmokepp::plastics
 			kd = L + 1;
 
 		SetMinNumberOfUnits(kd);
-
-		std::cout.setf(std::ios::scientific);
-		std::cout << "kd: " << kd << std::endl;
-	}
-
-	void PolystyreneKinetics::UpdateSharedSpeciesDistribution(const double T, const double P, Eigen::VectorXd& y)
-	{
-		const double alpha = SplittingCoefficient(T, P);
-
-		std::cout.setf(std::ios::scientific);
-		std::cout << "alpha: " << alpha << std::endl;
-
-		y(kd_ - 1 - 1) += y(N_ - 1);
-		y(kd_ - 1 + N_ - 1) += y(2 * N_ - 1);
-		y(kd_ - 1 + 2 * N_ - 1) += y(3 * N_ - 1);
-		y(kd_ - 1 + 3 * N_ - 1) += y(4 * N_ - 1);
-		y(kd_ - 1 + 4 * N_ - 1) += y(5 * N_ - 1);
-
-		y(N_ - 1) = (1. - alpha) *  y(kd_ - 1);
-		y(2 * N_ - 1) = (1. - alpha) *  y(kd_ + N_ - 1);
-		y(3 * N_ - 1) = (1. - alpha) *  y(kd_ + 2 * N_ - 1);
-		y(4 * N_ - 1) = (1. - alpha) *  y(kd_ + 3 * N_ - 1);
-		y(5 * N_ - 1) = (1. - alpha) *  y(kd_ + 4 * N_ - 1);
-
-		y(kd_ - 1) *= alpha;
-		y(kd_ + N_ - 1) *= alpha;
-		y(kd_ + 2 * N_ - 1) *= alpha;
-		y(kd_ + 3 * N_ - 1) *= alpha;
-		y(kd_ + 4 * N_ - 1) *= alpha;
 	}
 
 	double PolystyreneKinetics::Beta(const double C)
@@ -248,16 +227,57 @@ namespace opensmokepp::plastics
 
 		Aar3_ = 5e7;		// H-abstractions: Rt + PS -> PS + Rt'
 		Ear3_ = 16500.;		// H-abstractions: Rt + PS -> PS + Rt'
+
+
+		// ------------------------------------------------------------------------------------------------
+		// Right-side beta scissions
+		// ------------------------------------------------------------------------------------------------
+		is_delta_enabled_ = false;
+		delta_ = 0.;
+		
+		// ------------------------------------------------------------------------------------------------
+		// Back-biting
+		// ------------------------------------------------------------------------------------------------
+		is_backbiting_enabled_ = true;
+
+		// ------------------------------------------------------------------------------------------------
+		// Efficiency for random scissions
+		// ------------------------------------------------------------------------------------------------
+		eff_ = 1./0.01;
+
+		// ------------------------------------------------------------------------------------------------
+		// Weights for H-abstraction reactions
+		// ------------------------------------------------------------------------------------------------
+		fe1_ = 0.;
+		fe2_ = 1.;
+		fe3_ = 0.;
 	}
 
-	double PolystyreneKinetics::LiquidDensity(const double T)
+	double PolystyreneKinetics::LiquidDensity(const double T) const
 	{
 		return 1086.5 - 0.619*(T - 273.) + 1.36e-4*std::pow(T - 273., 2.);
 	}
 
-	double PolystyreneKinetics::BoilingTemperature(const double L, const double P)
+	double PolystyreneKinetics::BoilingTemperature(const double L, const double P) const
 	{
 		return 136.*std::sqrt(8. * L) / (1. - std::log(P) / 10.5);
+	}
+
+	double PolystyreneKinetics::SplittingCoefficient(const double T, const double P) const
+	{
+		const double Tb = BoilingTemperature(kd_, P);
+
+		// Modulation interval (TODO)
+		double deltem = 34.;
+		if (P != 1.)
+			deltem = -32. / std::log(P);
+
+		double alpha = 0.5*(1. + (std::tanh((T - Tb) / deltem)) / std::tanh(1.));
+
+		if (alpha >= 1.)      alpha = 1.;
+		else if (alpha <= 0.) alpha = 0.;
+
+		return alpha;
 	}
 
 	void PolystyreneKinetics::SetCCBonds(const double CCsr, const double CCsa)
@@ -1303,234 +1323,8 @@ namespace opensmokepp::plastics
 			fOut.close();
 		}
 	}
-
-	double PolystyreneKinetics::Gas()
-	{
-		double gas = 0.;
-		for (int j1 = 1; j1 <= kd_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			gas += y(j1 - 1) * (MWm_*j1 + 2.) +
-				y(j2 - 1) * (MWm_*j1 - 12.) +
-				y(j3 - 1) * (MWm_*j1) +
-				y(j4 - 1) * (MWm_*j1 + 14.) +
-				y(j5 - 1) * (MWm_*j1 + 12.);
-		}
-
-		// Largest chain in the gaseous phase
-		gas += y(kd_ - 1)*(MWm_*kd_ + 2.) +
-			y(kd_ + N_ - 1)*(MWm_*kd_ - 12.) +
-			y(kd_ + 2 * N_ - 1)*(MWm_*kd_) +
-			y(kd_ + 3 * N_ - 1)*(MWm_*kd_ + 14.) +
-			y(kd_ + 4 * N_ - 1)*(MWm_*kd_ + 12.);
-
-		return gas;
-	}
-
-	double PolystyreneKinetics::SumGasMW(const Eigen::VectorXd& y)
-	{
-		double gas = 0.;
-		for (int j1 = 1; j1 <= kd_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			gas += y(j1 - 1) * (MWm_*j1 + 2.) +
-				y(j2 - 1) * (MWm_*j1 - 12.) +
-				y(j3 - 1) * (MWm_*j1) +
-				y(j4 - 1) * (MWm_*j1 + 14.) +
-				y(j5 - 1) * (MWm_*j1 + 12.);
-		}
-
-		// Largest chain in the gaseous phase
-		gas += y(kd_ - 1)*(MWm_*kd_ + 2.) +
-			y(kd_ + N_ - 1)*(MWm_*kd_ - 12.) +
-			y(kd_ + 2 * N_ - 1)*(MWm_*kd_) +
-			y(kd_ + 3 * N_ - 1)*(MWm_*kd_ + 14.) +
-			y(kd_ + 4 * N_ - 1)*(MWm_*kd_ + 12.);
-
-		return gas;
-	}
-
-	double PolystyreneKinetics::Residual()
-	{
-		double res = 0.;
-		for (int j1 = kd_ + 1; j1 <= lumping_start_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			res += y(j1 - 1) * (MWm_*j1 + 2.) +
-				y(j2 - 1) * (MWm_*j1 - 12.) +
-				y(j3 - 1) * (MWm_*j1) +
-				y(j4 - 1) * (MWm_*j1 + 14.) +
-				y(j5 - 1) * (MWm_*j1 + 12.);
-		}
-
-		for (int j1 = lumping_start_; j1 <= N_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-
-			int px = j1;
-			if (is_lumping_enabled_ == true)
-				px = lumping_start_ + lumping_step_ * (j1 - lumping_start_);
-
-			res += y(j1 - 1) * (MWm_*px + 2.) +
-				y(j2 - 1) * (MWm_*px - 12.) +
-				y(j3 - 1) * (MWm_*px) +
-				y(j4 - 1) * (MWm_*px + 14.) +
-				y(j5 - 1) * (MWm_*px + 12.);
-		}
-
-		// Be careful: the last position (N_) is occupied by the smallest liquid chain with kd_ units
-		//             thus, the molecular weight is MWm_*kd_
-		res +=	y(N_ - 1)*(MWm_*kd_ + 2.) +
-				y(N_ + N_ - 1)*(MWm_*kd_ - 12.) +
-				y(N_ + 2 * N_ - 1)*(MWm_*kd_) +
-				y(N_ + 3 * N_ - 1)*(MWm_*kd_ + 14.) +
-				y(N_ + 4 * N_ - 1)*(MWm_*kd_ + 12.);
-
-		return res;
-	}
-
-	double PolystyreneKinetics::SumLiquidMW(const Eigen::VectorXd& y)
-	{
-		double res = 0.;
-		for (int j1 = kd_ + 1; j1 <= lumping_start_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			res += y(j1 - 1) * (MWm_*j1 + 2.) +
-				y(j2 - 1) * (MWm_*j1 - 12.) +
-				y(j3 - 1) * (MWm_*j1) +
-				y(j4 - 1) * (MWm_*j1 + 14.) +
-				y(j5 - 1) * (MWm_*j1 + 12.);
-		}
-
-		for (int j1 = lumping_start_; j1 <= N_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-
-			int px = j1;
-			if (is_lumping_enabled_ == true)
-				px = lumping_start_ + lumping_step_ * (j1 - lumping_start_);
-
-			res += y(j1 - 1) * (MWm_*px + 2.) +
-				y(j2 - 1) * (MWm_*px - 12.) +
-				y(j3 - 1) * (MWm_*px) +
-				y(j4 - 1) * (MWm_*px + 14.) +
-				y(j5 - 1) * (MWm_*px + 12.);
-		}
-
-		// Be careful: the last position (N_) is occupied by the smallest liquid chain with kd_ units
-		//             thus, the molecular weight is MWm_*kd_
-		res += y(N_ - 1)*(MWm_*kd_ + 2.) +
-			y(N_ + N_ - 1)*(MWm_*kd_ - 12.) +
-			y(N_ + 2 * N_ - 1)*(MWm_*kd_) +
-			y(N_ + 3 * N_ - 1)*(MWm_*kd_ + 14.) +
-			y(N_ + 4 * N_ - 1)*(MWm_*kd_ + 12.);
-
-		return res;
-	}
-
-	double PolystyreneKinetics::CLiquid()
-	{
-		double res = 0.;
-		for (int j1 = kd_ + 1; j1 <= lumping_start_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			res += y(j1 - 1) + y(j2 - 1) + y(j3 - 1) + y(j4 - 1)  + y(j5 - 1) ;
-		}
-
-		for (int j1 = lumping_start_; j1 <= N_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-
-			res += y(j1 - 1) + y(j2 - 1)  + y(j3 - 1)  +y(j4 - 1)  + y(j5 - 1) ;
-		}
-
-		// Be careful: the last position (N_) is occupied by the smallest liquid chain with kd_ units
-		//             thus, the molecular weight is MWm_*kd_
-		res += y(N_ - 1) + y(N_ + N_ - 1) + y(N_ + 2 * N_ - 1) + y(N_ + 3 * N_ - 1) + y(N_ + 4 * N_ - 1);
-
-		return res;
-	}
-
-	double PolystyreneKinetics::SumGas(const Eigen::VectorXd& y)
-	{
-		double gas = 0.;
-		for (int j1 = 1; j1 <= kd_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			gas += y(j1 - 1)  +
-				y(j2 - 1) +
-				y(j3 - 1)+
-				y(j4 - 1) +
-				y(j5 - 1);
-		}
-
-		// Largest chain in the gaseous phase
-		gas += y(kd_ - 1) +
-			y(kd_ + N_ - 1) +
-			y(kd_ + 2 * N_ - 1)+
-			y(kd_ + 3 * N_ - 1) +
-			y(kd_ + 4 * N_ - 1);
-
-		return gas;
-	}
-
-	double PolystyreneKinetics::SumLiquid(const Eigen::VectorXd& y)
-	{
-		double res = 0.;
-		for (int j1 = kd_ + 1; j1 <= lumping_start_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-			res += y(j1 - 1) + y(j2 - 1) + y(j3 - 1) + y(j4 - 1) + y(j5 - 1);
-		}
-
-		for (int j1 = lumping_start_; j1 <= N_ - 1; j1++)
-		{
-			const int j2 = j1 + N_;
-			const int j3 = j1 + 2 * N_;
-			const int j4 = j1 + 3 * N_;
-			const int j5 = j1 + 4 * N_;
-
-			res += y(j1 - 1) + y(j2 - 1) + y(j3 - 1) + y(j4 - 1) + y(j5 - 1);
-		}
-
-		// Be careful: the last position (N_) is occupied by the smallest liquid chain with kd_ units
-		//             thus, the molecular weight is MWm_*kd_
-		res += y(N_ - 1) + y(N_ + N_ - 1) + y(N_ + 2 * N_ - 1) + y(N_ + 3 * N_ - 1) + y(N_ + 4 * N_ - 1);
-
-		return res;
-	}
-
-	void PolystyreneKinetics::CCBonds()
+	
+	void PolystyreneKinetics::UpdateCCBonds()
 	{
 		double sumP = 0.;
 		double sumO = 0.;
@@ -1585,11 +1379,13 @@ namespace opensmokepp::plastics
 		wdio2_ = 0.;
 		for (int j = 1; j <= kd_; j++)
 		{
-			wpar1_ += y(j - 1)*(MWm_ * j + 2.);
-			wpar3_ += y(j + N_ - 1)*(MWm_ * j - 12.);
-			wole1_ += y(j + 2 * N_ - 1)*(MWm_ * j);
-			wole2_ += y(j + 3 * N_ - 1)*(MWm_ * j + 14.);
-			wdio2_ += y(j + 4 * N_ - 1)*(MWm_ * j + 12.);
+			const double MW = MWm_ * j;
+
+			wpar1_ += y(j - 1)*(MW + 2.);
+			wpar3_ += y(j + N_ - 1)*(MW - 12.);
+			wole1_ += y(j + 2 * N_ - 1)*(MW);
+			wole2_ += y(j + 3 * N_ - 1)*(MW + 14.);
+			wdio2_ += y(j + 4 * N_ - 1)*(MW + 12.);
 		}
 		wpar_ = wpar1_ + wpar3_;
 		wole_ = wole1_ + wole2_;
@@ -1597,8 +1393,150 @@ namespace opensmokepp::plastics
 		wtot_ = wpar_ + wole_ + wdio_;
 	}
 
-	PolystyreneKinetics::~PolystyreneKinetics()
+	void PolystyreneKinetics::UpdateSharedSpeciesDistribution(const double T, const double P, Eigen::VectorXd& v) const
 	{
+		const double alpha = SplittingCoefficient(T, P);
+
+		v(kd_ - 1 - 1) += v(N_ - 1);
+		v(kd_ - 1 + N_ - 1) += v(2 * N_ - 1);
+		v(kd_ - 1 + 2 * N_ - 1) += v(3 * N_ - 1);
+		v(kd_ - 1 + 3 * N_ - 1) += v(4 * N_ - 1);
+		v(kd_ - 1 + 4 * N_ - 1) += v(5 * N_ - 1);
+
+		v(N_ - 1) = (1. - alpha) *  v(kd_ - 1);
+		v(2 * N_ - 1) = (1. - alpha) *  v(kd_ + N_ - 1);
+		v(3 * N_ - 1) = (1. - alpha) *  v(kd_ + 2 * N_ - 1);
+		v(4 * N_ - 1) = (1. - alpha) *  v(kd_ + 3 * N_ - 1);
+		v(5 * N_ - 1) = (1. - alpha) *  v(kd_ + 4 * N_ - 1);
+
+		v(kd_ - 1) *= alpha;
+		v(kd_ + N_ - 1) *= alpha;
+		v(kd_ + 2 * N_ - 1) *= alpha;
+		v(kd_ + 3 * N_ - 1) *= alpha;
+		v(kd_ + 4 * N_ - 1) *= alpha;
+	}
+
+	double PolystyreneKinetics::SumGasMW(const Eigen::VectorXd& v) const
+	{
+		double gas = 0.;
+		for (int j1 = 1; j1 <= kd_ - 1; j1++)
+		{
+			const int j2 = j1 + N_;
+			const int j3 = j1 + 2 * N_;
+			const int j4 = j1 + 3 * N_;
+			const int j5 = j1 + 4 * N_;
+			const double MW = MWm_ * j1;
+			gas +=	v(j1 - 1) * (MW + 2.) +
+					v(j2 - 1) * (MW - 12.) +
+					v(j3 - 1) * (MW)+
+					v(j4 - 1) * (MW + 14.) +
+					v(j5 - 1) * (MW + 12.);
+		}
+
+		// Largest chain in the gaseous phase
+		const double MW = MWm_ * kd_;
+		gas +=	v(kd_ - 1)*(MW + 2.) +
+				v(kd_ + N_ - 1)*(MW - 12.) +
+				v(kd_ + 2 * N_ - 1)*(MW)+
+				v(kd_ + 3 * N_ - 1)*(MW + 14.) +
+				v(kd_ + 4 * N_ - 1)*(MW + 12.);
+
+		return gas;
+	}
+
+	double PolystyreneKinetics::SumLiquidMW(const Eigen::VectorXd& v) const
+	{
+		double liquid = 0.;
+		for (int j1 = kd_ + 1; j1 <= lumping_start_ - 1; j1++)
+		{
+			const int j2 = j1 + N_;
+			const int j3 = j1 + 2 * N_;
+			const int j4 = j1 + 3 * N_;
+			const int j5 = j1 + 4 * N_;
+
+			const double MW = MWm_ * j1;
+			liquid +=	v(j1 - 1) * (MW + 2.) +
+						v(j2 - 1) * (MW - 12.) +
+						v(j3 - 1) * (MW)+
+						v(j4 - 1) * (MW + 14.) +
+						v(j5 - 1) * (MW + 12.);
+		}
+
+		for (int j1 = lumping_start_; j1 <= N_ - 1; j1++)
+		{
+			const int j2 = j1 + N_;
+			const int j3 = j1 + 2 * N_;
+			const int j4 = j1 + 3 * N_;
+			const int j5 = j1 + 4 * N_;
+
+			int px = j1;
+			if (is_lumping_enabled_ == true)
+				px = lumping_start_ + lumping_step_ * (j1 - lumping_start_);
+
+			const double MW = MWm_ * px;
+			liquid +=	v(j1 - 1) * (MW + 2.) +
+						v(j2 - 1) * (MW - 12.) +
+						v(j3 - 1) * (MW)+
+						v(j4 - 1) * (MW + 14.) +
+						v(j5 - 1) * (MW + 12.);
+		}
+
+		// Be careful: the last position (N_) is occupied by the smallest liquid chain with kd_ units
+		//             thus, the molecular weight is MWm_*kd_
+		const double MW = MWm_ * kd_;
+		liquid += v(N_ - 1)*(MW + 2.) +
+			v(N_ + N_ - 1)*(MW - 12.) +
+			v(N_ + 2 * N_ - 1)*(MW)+
+			v(N_ + 3 * N_ - 1)*(MW + 14.) +
+			v(N_ + 4 * N_ - 1)*(MW + 12.);
+
+		return liquid;
+	}
+
+	double PolystyreneKinetics::SumGas(const Eigen::VectorXd& v) const
+	{
+		double gas = 0.;
+		for (int j1 = 1; j1 <= kd_ - 1; j1++)
+		{
+			const int j2 = j1 + N_;
+			const int j3 = j1 + 2 * N_;
+			const int j4 = j1 + 3 * N_;
+			const int j5 = j1 + 4 * N_;
+			gas += v(j1 - 1) + v(j2 - 1) + v(j3 - 1) + v(j4 - 1) + v(j5 - 1);
+		}
+
+		// Largest chain in the gaseous phase
+		gas += v(kd_ - 1) + v(kd_ + N_ - 1) + v(kd_ + 2 * N_ - 1) + v(kd_ + 3 * N_ - 1) + v(kd_ + 4 * N_ - 1);
+
+		return gas;
+	}
+
+	double PolystyreneKinetics::SumLiquid(const Eigen::VectorXd& v) const
+	{
+		double liquid = 0.;
+		for (int j1 = kd_ + 1; j1 <= lumping_start_ - 1; j1++)
+		{
+			const int j2 = j1 + N_;
+			const int j3 = j1 + 2 * N_;
+			const int j4 = j1 + 3 * N_;
+			const int j5 = j1 + 4 * N_;
+			liquid += v(j1 - 1) + v(j2 - 1) + v(j3 - 1) + v(j4 - 1) + v(j5 - 1);
+		}
+
+		for (int j1 = lumping_start_; j1 <= N_ - 1; j1++)
+		{
+			const int j2 = j1 + N_;
+			const int j3 = j1 + 2 * N_;
+			const int j4 = j1 + 3 * N_;
+			const int j5 = j1 + 4 * N_;
+			liquid += v(j1 - 1) + v(j2 - 1) + v(j3 - 1) + v(j4 - 1) + v(j5 - 1);
+		}
+
+		// Be careful: the last position (N_) is occupied by the smallest liquid chain with kd_ units
+		//             thus, the molecular weight is MWm_*kd_
+		liquid += v(N_ - 1) + v(N_ + N_ - 1) + v(N_ + 2 * N_ - 1) + v(N_ + 3 * N_ - 1) + v(N_ + 4 * N_ - 1);
+
+		return liquid;
 	}
 	
 }

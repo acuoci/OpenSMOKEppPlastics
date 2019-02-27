@@ -67,7 +67,7 @@ TEST(PS, baseline_01)
 	opensmokepp::plastics::PolystyreneKinetics kinetics;
 	kinetics.SetVerbose(false);
 	kinetics.SetMaxNumberOfUnits(N);
-	kinetics.CalculateSharedSpecies(T, P);
+	kinetics.UpdateSharedSpecies(T, P);
 	kinetics.UpdateSharedSpeciesDistribution(T, P, y);
 
 	const double rho = kinetics.LiquidDensity(T);
@@ -78,8 +78,8 @@ TEST(PS, baseline_01)
 	kinetics.SetStatus(T, P, c);
 
 	const double m_tot = 0.100;
-	const double rho_gas = kinetics.Gas();						// gaseous density [kg/m3]
-	const double rho_liq = kinetics.Residual();					// liquid density [kg/m3]
+	const double rho_gas = kinetics.SumGasMW(c);				// gaseous density [kg/m3]
+	const double rho_liq = kinetics.SumLiquidMW(c);				// liquid density [kg/m3]
 	const double m_gas = m_tot * rho_gas / (rho_gas + rho_liq); // gaseous mass [kg]
 	const double m_liq = m_tot * rho_liq / (rho_gas + rho_liq); // liquid mass [kg]
 	const double V_liq = m_tot / rho_liq;						// volume of liquid phase [m3]
@@ -119,7 +119,7 @@ TEST(PS, baseline_01)
 			c = n / (VL*1000.);
 
 			kinetics.SetStatus(T, P, c);
-			kinetics.CCBonds();
+			kinetics.UpdateCCBonds();
 			kinetics.KineticConstants();
 			kinetics.FormationRates();
 			n += dt * kinetics.R()*VL*1000.;			// moles
