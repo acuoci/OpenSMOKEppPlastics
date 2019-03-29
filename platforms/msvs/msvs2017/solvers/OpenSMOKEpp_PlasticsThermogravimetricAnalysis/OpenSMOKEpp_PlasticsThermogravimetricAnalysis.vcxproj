@@ -43,6 +43,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -50,6 +51,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -70,10 +72,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\source;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\source;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\include;C:\Development\ExternalNumericalLibraries\OdeSMOKE\src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\source;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\source;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Development\ExternalNumericalLibraries\OdeSMOKE\src;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -106,10 +108,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/std:c++17 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/std:c++17 /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\lib\msvs\msvs2017\x64\Debug;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0\lib64-msvc-14.1</AdditionalLibraryDirectories>
+      <AdditionalDependencies>msvs2017.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,9 +130,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\source\ExplicitOdeSolver_Parameters.h" />
+    <ClInclude Include="..\..\..\..\..\source\ExplicitOdeSolver_Parameters.hpp" />
+    <ClInclude Include="..\..\..\..\..\source\Grammar_ExplicitOdeSolver_Parameters.h" />
     <ClInclude Include="..\..\..\..\..\source\Grammar_InitialDistribution.h" />
     <ClInclude Include="..\..\..\..\..\source\Grammar_Kinetics.h" />
     <ClInclude Include="..\..\..\..\..\source\Grammar_ThermogravimetricAnalysis.h" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis.h" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis.hpp" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis_Options.h" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis_Options.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\source\OpenSMOKEpp_PlasticsThermogravimetricAnalysis.cpp" />

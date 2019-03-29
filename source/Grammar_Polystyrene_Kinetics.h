@@ -29,11 +29,12 @@
 #include "dictionary/OpenSMOKE_DictionaryManager.h"
 #include "dictionary/OpenSMOKE_DictionaryGrammar.h"
 #include "dictionary/OpenSMOKE_DictionaryKeyWord.h"
+#include "Utilities.h"
 
 namespace OpenSMOKE
 {
 	
-	class Grammar_Kinetics : public OpenSMOKE::OpenSMOKE_DictionaryGrammar
+	class Grammar_Polystyrene_Kinetics : public OpenSMOKE::OpenSMOKE_DictionaryGrammar
 	{
 	protected:
 
@@ -164,27 +165,7 @@ namespace OpenSMOKE
 		}
 	};
 
-	double ConversionActivationEnergy(const double E, const std::string units)
-	{
-		if (units == "cal/mol")
-			return E;
-		else if (units == "J/mol")
-			return E * 4.186;
-		else
-		{
-			std::cout << "Fatal error: wrong units for activation energy. Available units: cal/mol | J/mol" << std::endl;
-			std::cout << "Press enter to exit..." << std::endl;
-			getchar();
-			exit(-1);
-		}
-
-		return 0;
-	}
-
-	double ConversionFrequencyFactor(const double A, const std::string units)
-	{
-		return A;
-	}
+	
 
 
 	void KineticsFromDictionary(	const std::string input_file_name,
@@ -194,7 +175,7 @@ namespace OpenSMOKE
 		// Define the dictionaries
 		OpenSMOKE::OpenSMOKE_DictionaryManager dictionaries;
 
-		OpenSMOKE::Grammar_Kinetics grammar_kinetics;
+		OpenSMOKE::Grammar_Polystyrene_Kinetics grammar_kinetics;
 		dictionaries.ReadDictionariesFromFile(input_file_name);
 		dictionaries(dictionary_name).SetGrammar(grammar_kinetics);
 
@@ -204,121 +185,121 @@ namespace OpenSMOKE
 		if (dictionaries(dictionary_name).CheckOption("@As") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@As", value, units);
-			kinetics.SetAs(ConversionFrequencyFactor(value, units));
+			kinetics.SetAs(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Es") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Es", value, units);
-			kinetics.SetEs(ConversionActivationEnergy(value, units));
+			kinetics.SetEs(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Aa") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Aa", value, units);
-			kinetics.SetAa(ConversionFrequencyFactor(value, units));
+			kinetics.SetAa(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ea") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ea", value, units);
-			kinetics.SetEa(ConversionActivationEnergy(value, units));
+			kinetics.SetEa(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@At") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@At", value, units);
-			kinetics.SetAt(ConversionFrequencyFactor(value, units));
+			kinetics.SetAt(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Et") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Et", value, units);
-			kinetics.SetEt(ConversionActivationEnergy(value, units));
+			kinetics.SetEt(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ar") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ar", value, units);
-			kinetics.SetAr(ConversionFrequencyFactor(value, units));
+			kinetics.SetAr(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Er") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Er", value, units);
-			kinetics.SetEr(ConversionActivationEnergy(value, units));
+			kinetics.SetEr(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ar1") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ar1", value, units);
-			kinetics.SetAr1(ConversionFrequencyFactor(value, units));
+			kinetics.SetAr1(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Er1") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Er1", value, units);
-			kinetics.SetEr1(ConversionActivationEnergy(value, units));
+			kinetics.SetEr1(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ar2") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ar2", value, units);
-			kinetics.SetAr2(ConversionFrequencyFactor(value, units));
+			kinetics.SetAr2(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Er2") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Er2", value, units);
-			kinetics.SetEr2(ConversionActivationEnergy(value, units));
+			kinetics.SetEr2(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ar3") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ar3", value, units);
-			kinetics.SetAr3(ConversionFrequencyFactor(value, units));
+			kinetics.SetAr3(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Er3") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Er3", value, units);
-			kinetics.SetEr3(ConversionActivationEnergy(value, units));
+			kinetics.SetEr3(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Au") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Au", value, units);
-			kinetics.SetAu(ConversionFrequencyFactor(value, units));
+			kinetics.SetAu(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Eu") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Eu", value, units);
-			kinetics.SetEu(ConversionActivationEnergy(value, units));
+			kinetics.SetEu(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Abb") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Abb", value, units);
-			kinetics.SetAbb(ConversionFrequencyFactor(value, units));
+			kinetics.SetAbb(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ebb") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ebb", value, units);
-			kinetics.SetEbb(ConversionActivationEnergy(value, units));
+			kinetics.SetEbb(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Abeta") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Abeta", value, units);
-			kinetics.SetAbeta(ConversionFrequencyFactor(value, units));
+			kinetics.SetAbeta(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Ebeta") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@Ebeta", value, units);
-			kinetics.SetEbeta(ConversionActivationEnergy(value, units));
+			kinetics.SetEbeta(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
 

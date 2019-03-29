@@ -309,6 +309,11 @@ namespace opensmokepp::plastics
 		/// @return the activation energy (in cal/mol)
 		inline double Ebeta() const { return Ebeta_; }
 
+
+		/// @brief Returns the maximum number of monomeric units to be tracked
+		/// @details TODO
+		/// @return the maximum number of monomeric units to be tracked
+		inline int MaxNumberOfUnits() const { return N_; }
 		
 		/// @brief Returns the polymer molecular weight (in g/mol or kg/kmol)
 		/// @return the polymer molecular weight (in g/mol or kg/kmol)
@@ -365,6 +370,7 @@ namespace opensmokepp::plastics
 		/// @param[in]  P pressure (in atm)
 		/// @param[out] y vector of extensive properties (typically moles)
 		void UpdateSharedSpeciesDistribution(const double T, const double P, Eigen::VectorXd& y) const;
+		void UpdateSharedSpeciesDistribution(const int kd, Eigen::VectorXd& v);
 
 		/// @brief Returns the sum of elements of input vector belonging to the gaseous phase
 		/// @details TODO
@@ -389,6 +395,12 @@ namespace opensmokepp::plastics
 		/// @param[in] v vector of elements to be processed
 		/// @return the weighted sum
 		double SumLiquidMW(const Eigen::VectorXd& v) const;
+
+		/// @brief Returns the sum (weighted on the molecular weights) of elements of input vector
+		/// @details TODO
+		/// @param[in] v vector of elements to be processed
+		/// @return the weighted sum
+		double SumMW(const Eigen::VectorXd& v) const;
 
 
 	public:
@@ -441,6 +453,17 @@ namespace opensmokepp::plastics
 		/// @return the splitting coefficient
 		double SplittingCoefficient(const double T, const double P) const;
 
+		/// @brief Returns the lower limit of number of monomeric units corresponding to liquid-phase species
+		/// @details TODO
+		/// @param[in] T temperature (in K)
+		/// @param[in] P pressure (in Pa)
+		/// @return the lower limit of number of monomeric units corresponding to liquid-phase species
+		int MinNumberOfUnits(const double T, const double P) const;
+
+		/// @brief Returns the current lower limit of number of monomeric units corresponding to liquid-phase species
+		/// @details TODO
+		/// @return the current lower limit of number of monomeric units corresponding to liquid-phase species
+		inline int MinNumberOfUnits() { return kd_; }
 
 	private:
 

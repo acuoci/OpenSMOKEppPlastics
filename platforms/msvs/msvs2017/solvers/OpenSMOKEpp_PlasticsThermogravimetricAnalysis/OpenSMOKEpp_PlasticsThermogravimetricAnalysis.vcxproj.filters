@@ -24,6 +24,27 @@
     <ClInclude Include="..\..\..\..\..\source\Grammar_ThermogravimetricAnalysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis_Options.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis_Options.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\ExplicitOdeSolver_Parameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\Grammar_ExplicitOdeSolver_Parameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\source\ExplicitOdeSolver_Parameters.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\source\OpenSMOKEpp_PlasticsThermogravimetricAnalysis.cpp">

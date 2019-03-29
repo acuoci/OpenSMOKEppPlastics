@@ -14,25 +14,43 @@
 
 Dictionary ThermogravimetricAnalysis
 {
-		@Temperature		599.85 C;
+		@PolymerType		polystyrene;
+		
+		@Temperature		499.85 C;
 		@Pressure			1 atm;
-		@EndTime			1 s;
+		@EndTime			2 s;
 		
 		//@TemperatureProfile	T-Profile;
-		//@TemperatureSlope		100 C/s;
+		@TemperatureSlope		100 C/s;
+		
+		@Options			options;
+		@OdeParameters		ode-parameters;
 }
 
 Dictionary InitialDistribution
 {
-		@Type				Schultz-Flory;
-		@Threshold			1e-4;
-		@StretchingFactor	20;
+		@Type						Schultz-Flory;
+		@Threshold					1e-3;
+		@StretchingFactor			20;
 
 		@MolecularWeightPolymer		50000 g/mol;
 		
-		@Lumping			true;
-		@LumpingStart		100;
-		@LumpingStep		10;
+		@Lumping					true;
+		@LumpingStart				100;
+		@LumpingStep				10;
+}
+
+Dictionary options
+{
+	@OutputFolder		Output;
+	@StepsVideo			10;
+	@StepsFile			 5;
+}
+
+Dictionary ode-parameters
+{
+	@AbsoluteTolerance	1e-12;
+	@RelativeTolerance	1e-7;
 }
 
 Dictionary Kinetics

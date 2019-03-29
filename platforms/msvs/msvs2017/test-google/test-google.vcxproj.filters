@@ -13,4 +13,11 @@
       <Filter>tests\PS</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\test\gtest\include\pch.cpp" />
+    <ClCompile Include="..\..\..\..\test\gtest\test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

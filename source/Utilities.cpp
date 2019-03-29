@@ -28,6 +28,41 @@
 
 namespace opensmokepp::plastics
 {
+
+	int SearchForLC(std::vector<double>& list_boiling_temperature, const double T)
+	{
+		for (int i = 0; i < list_boiling_temperature.size(); i++)
+			if (list_boiling_temperature[i] > T)
+				return i + 1;
+
+		std::cout << "Fatal error: Maximum allowed temperature is " << list_boiling_temperature[list_boiling_temperature.size() - 1] << std::endl;
+		std::cout << "Press enter to exit...";
+		getchar();
+		exit(-1);
+	}
+
+	double ConversionActivationEnergy(const double E, const std::string units)
+	{
+		if (units == "cal/mol")
+			return E;
+		else if (units == "J/mol")
+			return E * 4.186;
+		else
+		{
+			std::cout << "Fatal error: wrong units for activation energy. Available units: cal/mol | J/mol" << std::endl;
+			std::cout << "Press enter to exit..." << std::endl;
+			getchar();
+			exit(-1);
+		}
+
+		return 0;
+	}
+
+	double ConversionFrequencyFactor(const double A, const std::string units)
+	{
+		return A;
+	}
+
 	double SchultzFloryDistribution(const double gamma, const double p, const int i)
 	{
 		return gamma * std::pow(p, i - 1)*std::pow(1. - p, 2.);
@@ -137,7 +172,7 @@ namespace opensmokepp::plastics
 			double total_mass = 0.;
 			for (int i = 1; i <= nsom; i++)
 			{
-				total_mass += y(i - 1)*(MW_monomer*i + 2);
+				total_mass += y(i - 1)*(MW_monomer*i + 2.);
 				fOut << std::setw(8)  << std::left << i;
 				fOut << std::setw(16) << std::left << y(i - 1);
 				fOut << std::setw(16) << std::left << total_mass;
@@ -268,5 +303,90 @@ namespace opensmokepp::plastics
 			for (int i = 0; i < std::min(neq, static_cast<int>(tmp.size())); i++)
 				y(i) = tmp(i);
 		}
+	}
+
+
+	void InitialDistribution(Eigen::VectorXd& y, const double epsi, const double MWm, const double MWp,
+		int& N, double& wg)
+	{
+		y.setZero();
+
+		const int ls = static_cast<int>((y.size() - 1) / 3.);
+
+		const double p = 1. - MWm / MWp;
+
+		const int nn = static_cast<int>(1. / (1. - p));
+
+
+		double sum = 0.;
+		for (int i = 1; i <= 1000000; i++)
+		{
+			y(i - 1) = wg / MWm * std::pow(p, i - 1)*std::pow(1. - p, 2.);
+
+			sum += y(i - 1)*(MWm*i + 2.);
+
+			if (std::fabs(wg - sum) / wg < epsi)
+			{
+				N = i;
+				break;
+
+			}
+
+			if (i == ls)
+			{
+				std::cout << "Initial distribution: Max dimension error" << std::endl;
+				std::cout << "Press enter to exit..." << std::endl;
+				getchar();
+				exit(-1);
+			}
+
+			N = i;
+		}
+
+		const int ne = N * 3 + 1;
+
+		Eigen::VectorXd ytmp = y;
+		y.resize(ne);
+		for (unsigned int i = 0; i < std::min(ytmp.size(), y.size()); i++)
+			y(i) = ytmp(i);
+
+		ytmp = y;
+		y.resize(ne + 33);
+		y.setZero();
+		for (unsigned int i = 0; i < ytmp.size(); i++)
+			y(i) = ytmp(i);
+
+
+		// ndim è la dimensione del vettore inizializzato a seconda del polimero
+		// Fornisce la prima distribuzione asimmetrica del polimero nel file.ris
+
+		std::ofstream fDistribution("DistributionPP.out", std::ios::out);
+		fDistribution.setf(std::ios::scientific);
+
+		std::ofstream fFractions("Fractions.out", std::ios::out);
+		fFractions.setf(std::ios::scientific);
+
+		double t = 0.;
+		for (int i = 1; i <= N; i++)
+		{
+			const double s = y(i - 1)*(i*MWm + 2.);
+			t += s;
+
+			fDistribution << i * MWm << " " << s << " " << t << std::endl;
+			fFractions << i * MWm << " " << y(i) << std::endl;
+		}
+
+		wg = t;	// TODO
+
+		fDistribution.close();
+		fFractions.close();
+
+		int NPA = N;
+		int NOL = N;
+		int NDO = N;
+
+		y(NPA + NOL - 1) = 0.;
+		y(ne - 1 - 1) = 0.;
+		y(ne - 2 - 1) = 0.;
 	}
 }

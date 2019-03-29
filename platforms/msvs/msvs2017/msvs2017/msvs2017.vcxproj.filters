@@ -21,6 +21,9 @@
     <ClCompile Include="..\..\..\..\source\Utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\source\PolyethyleneKinetics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\source\PolystyreneKinetics.h">
@@ -29,7 +32,19 @@
     <ClInclude Include="..\..\..\..\source\Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\source\Grammar_Kinetics.h">
+    <ClInclude Include="..\..\..\..\source\PolyethyleneKinetics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\source\Grammar_Polyethylene_Kinetics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\source\Grammar_Polystyrene_Kinetics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\source\Polyethylene_ODESystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\source\Polystyrene_ODESystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

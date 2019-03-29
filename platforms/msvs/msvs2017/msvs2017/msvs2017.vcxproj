@@ -82,11 +82,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\..\..\lib\msvs\msvs2017\$(Platform)\$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\..\..\lib\msvs\msvs2017\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/std:c++17 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/std:c++17 /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,7 +129,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/std:c++17 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/std:c++17 /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -137,12 +137,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\source\PolyethyleneKinetics.cpp" />
     <ClCompile Include="..\..\..\..\source\PolystyreneKinetics.cpp" />
     <ClCompile Include="..\..\..\..\source\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\source\Grammar_Kinetics.h" />
+    <ClInclude Include="..\..\..\..\source\Grammar_Polyethylene_Kinetics.h" />
+    <ClInclude Include="..\..\..\..\source\Grammar_Polystyrene_Kinetics.h" />
+    <ClInclude Include="..\..\..\..\source\PolyethyleneKinetics.h" />
+    <ClInclude Include="..\..\..\..\source\Polyethylene_ODESystem.h" />
     <ClInclude Include="..\..\..\..\source\PolystyreneKinetics.h" />
+    <ClInclude Include="..\..\..\..\source\Polystyrene_ODESystem.h" />
     <ClInclude Include="..\..\..\..\source\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

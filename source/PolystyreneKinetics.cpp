@@ -263,6 +263,11 @@ namespace opensmokepp::plastics
 		return 136.*std::sqrt(8. * L) / (1. - std::log(P) / 10.5);
 	}
 
+	int PolystyreneKinetics::MinNumberOfUnits(const double T, const double P) const
+	{
+		return static_cast<int>(std::pow(T / 136.*(1. - std::log(P) / 10.5), 2.) / 8.);
+	}
+
 	double PolystyreneKinetics::SplittingCoefficient(const double T, const double P) const
 	{
 		const double Tb = BoilingTemperature(kd_, P);
@@ -1414,6 +1419,36 @@ namespace opensmokepp::plastics
 		v(kd_ + 2 * N_ - 1) *= alpha;
 		v(kd_ + 3 * N_ - 1) *= alpha;
 		v(kd_ + 4 * N_ - 1) *= alpha;
+	}
+
+	void PolystyreneKinetics::UpdateSharedSpeciesDistribution(const int kd, Eigen::VectorXd& v)
+	{
+		SetMinNumberOfUnits(kd);
+
+		const double alpha = 0.;
+
+		v(kd_ - 1 - 1) += v(N_ - 1);
+		v(kd_ - 1 + N_ - 1) += v(2 * N_ - 1);
+		v(kd_ - 1 + 2 * N_ - 1) += v(3 * N_ - 1);
+		v(kd_ - 1 + 3 * N_ - 1) += v(4 * N_ - 1);
+		v(kd_ - 1 + 4 * N_ - 1) += v(5 * N_ - 1);
+
+		v(N_ - 1) = (1. - alpha) *  v(kd_ - 1);
+		v(2 * N_ - 1) = (1. - alpha) *  v(kd_ + N_ - 1);
+		v(3 * N_ - 1) = (1. - alpha) *  v(kd_ + 2 * N_ - 1);
+		v(4 * N_ - 1) = (1. - alpha) *  v(kd_ + 3 * N_ - 1);
+		v(5 * N_ - 1) = (1. - alpha) *  v(kd_ + 4 * N_ - 1);
+
+		v(kd_ - 1) *= alpha;
+		v(kd_ + N_ - 1) *= alpha;
+		v(kd_ + 2 * N_ - 1) *= alpha;
+		v(kd_ + 3 * N_ - 1) *= alpha;
+		v(kd_ + 4 * N_ - 1) *= alpha;
+	}
+
+	double PolystyreneKinetics::SumMW(const Eigen::VectorXd& v) const
+	{
+		return SumGasMW(v) + SumLiquidMW(v);
 	}
 
 	double PolystyreneKinetics::SumGasMW(const Eigen::VectorXd& v) const

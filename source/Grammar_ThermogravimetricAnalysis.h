@@ -14,13 +14,23 @@
 |                                                                         |
 |-------------------------------------------------------------------------|
 |                                                                         |
-|   This file is part of OpenSMOKE++.                                     |
+|   This file is part of OpenSMOKE++ framework.                           |
+|                                                                         |
+|	License                                                               |
 |                                                                         |
 |   Copyright(C) 2019  Alberto Cuoci                                      |
-|   Source-code or binary products cannot be resold or distributed        |
-|   Non-commercial use only                                               |
-|   Cannot modify source-code for any purpose (cannot create              |
-|   derivative works)                                                     |
+|   OpenSMOKE++ is free software: you can redistribute it and/or modify   |
+|   it under the terms of the GNU General Public License as published by  |
+|   the Free Software Foundation, either version 3 of the License, or     |
+|   (at your option) any later version.                                   |
+|                                                                         |
+|   OpenSMOKE++ is distributed in the hope that it will be useful,        |
+|   but WITHOUT ANY WARRANTY; without even the implied warranty of        |
+|   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         |
+|   GNU General Public License for more details.                          |
+|                                                                         |
+|   You should have received a copy of the GNU General Public License     |
+|   along with OpenSMOKE++. If not, see <http://www.gnu.org/licenses/>.   |
 |                                                                         |
 \*-----------------------------------------------------------------------*/
 
@@ -30,6 +40,11 @@
 #include "dictionary/OpenSMOKE_DictionaryGrammar.h"
 #include "dictionary/OpenSMOKE_DictionaryKeyWord.h"
 
+#include "ThermogravimetricAnalysis_Options.h"
+#include "ExplicitOdeSolver_Parameters.h"
+
+//#include "math/native-ode-solvers/parameters/OdeSolver_Parameters.h;"
+
 namespace OpenSMOKE
 {
 	class Grammar_ThermogravimetricAnalysis : public OpenSMOKE::OpenSMOKE_DictionaryGrammar
@@ -38,6 +53,10 @@ namespace OpenSMOKE
 
 		virtual void DefineRules()
 		{
+			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@PolymerType",
+				OpenSMOKE::SINGLE_STRING,
+				"Polymer type: polyethylene | polypropylene | polystyrene",
+				true));
 
 			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@Pressure",
 				OpenSMOKE::SINGLE_MEASURE,
@@ -63,15 +82,29 @@ namespace OpenSMOKE
 				OpenSMOKE::SINGLE_MEASURE,
 				"Total time for integration of equations (default: 10 h)",
 				true));
+
+			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@Options",
+				OpenSMOKE::SINGLE_DICTIONARY,
+				"Dictionary containing additional options for solving the thermogravimetric analysis",
+				false));
+
+			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@OdeParameters",
+				OpenSMOKE::SINGLE_DICTIONARY,
+				"Dictionary containing the numerical parameters for solving the stiff ODE system",
+				false));
 		}
 	};
 
+	enum PolymerType { POLYETHYLENE, POLYPROPYLENE, POLYSTYRENE };
 
 	void ThermogravimetricAnalysisFromDictionary(	const std::string input_file_name,
 													const std::string dictionary_name,
-													double& T, double& P, double& tEnd,
+													double& P, double& tEnd,
 													Eigen::VectorXd& profile_t, 
-													Eigen::VectorXd& profile_T		)
+													Eigen::VectorXd& profile_T,
+													PolymerType& polymer_type,
+													OpenSMOKE::ThermogravimetricAnalysis_Options& thermo_options,
+													OdeSMOKE::ExplicitOdeSolver_Parameters& ode_options)
 	{
 		// Define the dictionaries
 		OpenSMOKE::OpenSMOKE_DictionaryManager dictionaries;
@@ -80,8 +113,28 @@ namespace OpenSMOKE
 		dictionaries.ReadDictionariesFromFile(input_file_name);
 		dictionaries(dictionary_name).SetGrammar(grammar_thermogravimetry);
 
+		if (dictionaries(dictionary_name).CheckOption("@PolymerType") == true)
+		{
+			std::string polymer_name;
+			dictionaries(dictionary_name).ReadString("@PolymerType", polymer_name);
 
-		T = 300.;
+			if (polymer_name == "polyethylene")
+				polymer_type = POLYETHYLENE;
+			else if (polymer_name == "polypropylene")
+				polymer_type = POLYPROPYLENE;
+			else if (polymer_name == "polystyrene")
+				polymer_type = POLYSTYRENE;
+			else
+			{
+				std::cout << "Fatal error: wrong @PolymerType" << std::endl;
+				std::cout << "Available options: polyethylene | polypropylene | polystyrene" << std::endl;
+				std::cout << "Press enter to exit..." << std::endl;
+				getchar();
+				exit(-1);
+			}
+		}
+
+		double T = 300.;
 		if (dictionaries(dictionary_name).CheckOption("@Temperature") == true)
 		{
 			std::string units;
@@ -200,6 +253,22 @@ namespace OpenSMOKE
 				profile_T(0) = T;
 				profile_T(1) = T;
 			}
+		}
+
+		// Options
+		if (dictionaries(dictionary_name).CheckOption("@Options") == true)
+		{
+				std::string name_of_options_subdictionary;
+				dictionaries(dictionary_name).ReadDictionary("@Options", name_of_options_subdictionary);
+				thermo_options.SetupFromDictionary(dictionaries(name_of_options_subdictionary));
+		}
+
+		// ODE Parameters
+		if (dictionaries(dictionary_name).CheckOption("@OdeParameters") == true)
+		{
+			std::string name_of_ode_parameters_subdictionary;
+			dictionaries(dictionary_name).ReadDictionary("@OdeParameters", name_of_ode_parameters_subdictionary);
+			ode_options.SetupFromDictionary(dictionaries(name_of_ode_parameters_subdictionary));
 		}
 	}
 }

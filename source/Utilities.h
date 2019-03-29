@@ -40,6 +40,10 @@ namespace opensmokepp::plastics
 	///          SCHULTZ-FLORY is the result of a ionic polimerization
 	enum PolymerDistribution { DIRAC_DELTA, SCHULTZ, SCHULTZ_FLORY };
 
+	double ConversionActivationEnergy(const double E, const std::string units);
+
+	double ConversionFrequencyFactor(const double A, const std::string units);
+
 	void InitialDistribution(const PolymerDistribution distribution,
 		const double MW_monomer, const double MWE,
 		const int lumping_start, const int lumping_step,
@@ -48,6 +52,12 @@ namespace opensmokepp::plastics
 
 	void LumpingSetup(	const bool is_lumping, const int lumping_start, const int lumping_step,
 						const double MW_monomer, Eigen::VectorXd& y, int& N);
+
+	void InitialDistribution(Eigen::VectorXd& y, const double epsi, const double MWm, const double MWp,
+		int& N, double& wg);
+
+	int SearchForLC(std::vector<double>& list_boiling_temperature, const double T);
+
 
 }
 
