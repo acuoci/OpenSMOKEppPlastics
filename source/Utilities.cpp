@@ -78,7 +78,8 @@ namespace opensmokepp::plastics
 								const double MW_monomer, const double MWE, 
 								const int lumping_start, const int lumping_step,
 								const double epsilon, const int stretching_coefficient,
-								Eigen::VectorXd& y, int& N)
+								Eigen::VectorXd& y, int& N,
+								const std::string folder_name)
 	{
 
 		// Maximum number of monomeric units to be tracked
@@ -161,7 +162,9 @@ namespace opensmokepp::plastics
 		bool is_write_on_file = true;
 		if (is_write_on_file == true)
 		{
-			std::ofstream fOut("Distribution.out", std::ios::out);
+			const std::string file_name = folder_name + "/" + "Distribution.out";
+
+			std::ofstream fOut(file_name.c_str(), std::ios::out);
 			fOut.setf(std::ios::scientific);
 
 			fOut << std::setw(8)  << std::left << "Units";
@@ -186,7 +189,7 @@ namespace opensmokepp::plastics
 	
 
 	void LumpingSetup(	const bool is_lumping, const int lumping_start, const int lumping_step,
-						const double MW_monomer, Eigen::VectorXd& y, int& N)
+						const double MW_monomer, Eigen::VectorXd& y, int& N, const std::string folder_name)
 	{
 		if (is_lumping == true)
 		{
@@ -262,7 +265,9 @@ namespace opensmokepp::plastics
 
 			// Write on file
 			{
-				std::ofstream fOut("Lumping.out", std::ios::out);
+				const std::string file_name = folder_name + "/" + "Lumping.out";
+
+				std::ofstream fOut(file_name.c_str(), std::ios::out);
 				fOut.setf(std::ios::scientific);
 
 				fOut << std::setw(8) << std::left  << "Index";
@@ -307,7 +312,7 @@ namespace opensmokepp::plastics
 
 
 	void InitialDistribution(Eigen::VectorXd& y, const double epsi, const double MWm, const double MWp,
-		int& N, double& wg)
+		int& N, double& wg, const std::string folder_name)
 	{
 		y.setZero();
 
@@ -360,11 +365,10 @@ namespace opensmokepp::plastics
 		// ndim è la dimensione del vettore inizializzato a seconda del polimero
 		// Fornisce la prima distribuzione asimmetrica del polimero nel file.ris
 
-		std::ofstream fDistribution("DistributionPP.out", std::ios::out);
-		fDistribution.setf(std::ios::scientific);
+		const std::string file_name = folder_name + "/" + "Distribution.out";
 
-		std::ofstream fFractions("Fractions.out", std::ios::out);
-		fFractions.setf(std::ios::scientific);
+		std::ofstream fDistribution(file_name.c_str(), std::ios::out);
+		fDistribution.setf(std::ios::scientific);
 
 		double t = 0.;
 		for (int i = 1; i <= N; i++)
@@ -372,14 +376,12 @@ namespace opensmokepp::plastics
 			const double s = y(i - 1)*(i*MWm + 2.);
 			t += s;
 
-			fDistribution << i * MWm << " " << s << " " << t << std::endl;
-			fFractions << i * MWm << " " << y(i) << std::endl;
+			fDistribution << i * MWm << " " << s << " " << t << " " << y(i) << std::endl;
 		}
 
 		wg = t;	// TODO
 
 		fDistribution.close();
-		fFractions.close();
 
 		int NPA = N;
 		int NOL = N;

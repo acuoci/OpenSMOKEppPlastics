@@ -97,7 +97,8 @@ namespace OpenSMOKE
 											const std::string dictionary_name,
 											Eigen::VectorXd& y, int& N,
 											double& MW_polymer, double& MW_monomer, 
-											bool& is_lumping_enabled, int& lumping_start, int& lumping_step )
+											bool& is_lumping_enabled, int& lumping_start, int& lumping_step, 
+											const std::string& folder_name )
 	{
 		// Define the dictionaries
 		OpenSMOKE::OpenSMOKE_DictionaryManager dictionaries;
@@ -177,16 +178,16 @@ namespace OpenSMOKE
 
 		// Create the initial distribution
 		opensmokepp::plastics::InitialDistribution(distribution_type, MW_monomer, MW_polymer,
-			lumping_start, lumping_step, threshold*100., stretching_factor, y, N);
+			lumping_start, lumping_step, threshold*100., stretching_factor, y, N, folder_name);
 
 		// Adjust the initial distribution if lumping is enabled
-		opensmokepp::plastics::LumpingSetup(is_lumping_enabled, lumping_start, lumping_step, MW_monomer, y, N);
+		opensmokepp::plastics::LumpingSetup(is_lumping_enabled, lumping_start, lumping_step, MW_monomer, y, N, folder_name);
 	}
 
 	void InitialDistributionFromDictionary(const std::string input_file_name,
 		const std::string dictionary_name,
 		Eigen::VectorXd& y, int& N,
-		double& MW_polymer, double& MW_monomer, double& wg)
+		double& MW_polymer, double& MW_monomer, double& wg, const std::string& folder_name)
 	{
 		// Define the dictionaries
 		OpenSMOKE::OpenSMOKE_DictionaryManager dictionaries;
@@ -228,7 +229,7 @@ namespace OpenSMOKE
 		}
 
 		// Create the initial distribution
-		opensmokepp::plastics::InitialDistribution(y, threshold, MW_monomer, MW_polymer, N, wg);
+		opensmokepp::plastics::InitialDistribution(y, threshold, MW_monomer, MW_polymer, N, wg, folder_name);
 	}
 
 }

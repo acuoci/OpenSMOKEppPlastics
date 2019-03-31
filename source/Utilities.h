@@ -48,13 +48,13 @@ namespace opensmokepp::plastics
 		const double MW_monomer, const double MWE,
 		const int lumping_start, const int lumping_step,
 		const double epsilon, const int stretching_coefficient,
-		Eigen::VectorXd& y, int& N);
+		Eigen::VectorXd& y, int& N, const std::string folder_name);
 
 	void LumpingSetup(	const bool is_lumping, const int lumping_start, const int lumping_step,
-						const double MW_monomer, Eigen::VectorXd& y, int& N);
+						const double MW_monomer, Eigen::VectorXd& y, int& N, const std::string folder_name);
 
 	void InitialDistribution(Eigen::VectorXd& y, const double epsi, const double MWm, const double MWp,
-		int& N, double& wg);
+		int& N, double& wg, const std::string folder_name);
 
 	int SearchForLC(std::vector<double>& list_boiling_temperature, const double T);
 

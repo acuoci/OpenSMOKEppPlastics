@@ -261,6 +261,9 @@ namespace OpenSMOKE
 				std::string name_of_options_subdictionary;
 				dictionaries(dictionary_name).ReadDictionary("@Options", name_of_options_subdictionary);
 				thermo_options.SetupFromDictionary(dictionaries(name_of_options_subdictionary));
+
+				if (!boost::filesystem::exists(thermo_options.output_path()))
+					OpenSMOKE::CreateDirectory(thermo_options.output_path());
 		}
 
 		// ODE Parameters

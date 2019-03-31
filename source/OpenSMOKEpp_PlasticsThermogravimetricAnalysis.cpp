@@ -445,9 +445,9 @@ int main(int argc, char** argv)
 	OpenSMOKE::OpenSMOKE_logo("OpenSMOKEpp_PlasticsThermogravimetricAnalysis", "Alberto Cuoci (alberto.cuoci@polimi.it)");
 
 	//unsigned int max_number_allowed_species = 100000;
-	//OpenSMOKE::OpenSMOKE_CheckLicense(executable_folder, "PlugFlowReactor", max_number_allowed_species);
+	//OpenSMOKE::OpenSMOKE_CheckLicense(executable_folder, "OpenSMOKEpp_PlasticsThermogravimetricAnalysis", max_number_allowed_species);
 
-	std::string input_file_name = test_folder + "input.dic";
+	std::string input_file_name = "input.dic";
 
 	std::string thermogravimetricanalysis_dictionary_name = "ThermogravimetricAnalysis";
 	std::string initial_distribution_dictionary_name = "InitialDistribution";
@@ -503,7 +503,7 @@ int main(int argc, char** argv)
 		int N = 0;
 		double MW_polymer, MW_monomer;
 		OpenSMOKE::InitialDistributionFromDictionary(input_file_name, initial_distribution_dictionary_name,
-			y, N, MW_polymer, MW_monomer, wg);
+			y, N, MW_polymer, MW_monomer, wg, tg->options().output_path().string());
 
 
 		tg->SetInitialMass(wg);
@@ -597,7 +597,7 @@ int main(int argc, char** argv)
 			typedef OdeSMOKE::OdeRungeKuttaFamily< Eigen::VectorXd, Method_RungeKutta4thOrder> Solver_RungeKutta4thOrder;
 			OdeSMOKE::ODESolverVirtualClass< Eigen::VectorXd, Solver_RungeKutta4thOrder > ode_solver_rk;
 
-			ode_solver_rk.PrepareOutputFiles();
+			ode_solver_rk.PrepareOutputFiles(tg->options().output_path());
 			ode_solver_rk.SetThermogravimetricAnalysis(tg);
 			ode_solver_rk.SetInitialConditions(n);
 			ode_solver_rk.Solve(0, tg->FinalTime());
@@ -617,7 +617,7 @@ int main(int argc, char** argv)
 		bool is_lumping_enabled;
 		int lumping_start, lumping_step;
 		OpenSMOKE::InitialDistributionFromDictionary(input_file_name, initial_distribution_dictionary_name,
-							y, N, MW_polymer, MW_monomer, is_lumping_enabled, lumping_start, lumping_step);
+							y, N, MW_polymer, MW_monomer, is_lumping_enabled, lumping_start, lumping_step, tg->options().output_path().string());
 
 		// Set initial mass
 		tg->SetInitialMass(100.);
@@ -710,8 +710,10 @@ int main(int argc, char** argv)
 			typedef OdeSMOKE::OdeRungeKuttaFamily< Eigen::VectorXd, Method_RungeKutta4thOrder> Solver_RungeKutta4thOrder;
 			OdeSMOKE::ODESolverVirtualClass< Eigen::VectorXd, Solver_RungeKutta4thOrder > ode_solver_rk;
 
-			ode_solver_rk.PrepareOutputFiles();
+			ode_solver_rk.PrepareOutputFiles(tg->options().output_path());
 			ode_solver_rk.SetThermogravimetricAnalysis(tg);
+			ode_solver_rk.SetAbsoluteTolerances(tg->ode_options().absolute_tolerance());
+			ode_solver_rk.SetRelativeTolerances(tg->ode_options().relative_tolerance());
 			ode_solver_rk.SetInitialConditions(n);
 			ode_solver_rk.Solve(0, tg->FinalTime());
 			n = ode_solver_rk.y();

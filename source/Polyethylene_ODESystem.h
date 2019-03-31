@@ -54,9 +54,11 @@ public:
 		tg_ = tg;
 	}
 
-	void PrepareOutputFiles()
+	void PrepareOutputFiles(const boost::filesystem::path& folder_name)
 	{
-		fDistMass_.open("GasDistributionMass.out", std::ios::out);
+		boost::filesystem::path file_name_mass = folder_name / "GasDistributionMass.out";
+
+		fDistMass_.open(file_name_mass.c_str(), std::ios::out);
 		fDistMass_.setf(std::ios::scientific);
 		fDistMass_ << std::setprecision(6);
 		fDistMass_ << std::left;
@@ -76,7 +78,10 @@ public:
 		fDistMass_ << std::endl;
 
 
-		fDistMoles_.open("GasDistributionMoles.out", std::ios::out);
+
+		boost::filesystem::path file_name_moles = folder_name / "GasDistributionMoles.out";
+
+		fDistMoles_.open(file_name_moles.c_str(), std::ios::out);
 		fDistMoles_.setf(std::ios::scientific);
 		fDistMoles_ << std::setprecision(6);
 		fDistMoles_ << std::left;
@@ -87,9 +92,9 @@ public:
 		fDistMoles_ << std::setw(16) << "LC[-](4)";
 		fDistMoles_ << std::setw(16) << "dummy(5)";
 		fDistMoles_ << std::setw(16) << "res_liq(6)";
-		fDistMoles_ << std::setw(16) << "mass_liq[g](7)";
-		fDistMoles_ << std::setw(16) << "mass_gas[g](8)";
-		fDistMoles_ << std::setw(16) << "mass_tot[g](9)";
+		fDistMoles_ << std::setw(16) << "mol_liq[mol](7)";
+		fDistMoles_ << std::setw(16) << "mol_gas[mol](8)";
+		fDistMoles_ << std::setw(16) << "mol_tot[mol](9)";
 		fDistMoles_ << std::setw(16) << "P_x(10)";
 		fDistMoles_ << std::setw(16) << "O_x(11)";
 		fDistMoles_ << std::setw(16) << "D_x(12)";
@@ -153,16 +158,33 @@ public:
 			c_ = n / VL;								// concentrations [mol/l]
 
 
-			// On the screen
-			std::cout << std::setw(7) << step_;
-			std::cout << std::setw(16) << t;
-			std::cout << std::setw(12) << T;
-			std::cout << std::setw(12) << LC;
-			std::cout << std::setw(12) << resL;
-			std::cout << std::setw(12) << mL;
-			std::cout << std::setw(12) << mG;
-			std::cout << std::setw(12) << mL + mG;
-			std::cout << std::endl;
+			// Print on the screen
+			{
+				if (step_ % 500 == 1)
+				{
+					std::cout << std::endl;
+					std::cout << std::setw(7) << "#";
+					std::cout << std::setw(16) << "time[s]";
+					std::cout << std::setw(12) << "T[K]";
+					std::cout << std::setw(12) << "LC[-]";
+					std::cout << std::setw(12) << "res_liq";
+					std::cout << std::setw(12) << "mass_liq[g]";
+					std::cout << std::setw(12) << "mass_gas[g]";
+					std::cout << std::setw(12) << "mass_tot[g]";
+					std::cout << std::endl;
+				}
+
+				// On the screen
+				std::cout << std::setw(7) << step_;
+				std::cout << std::setw(16) << t;
+				std::cout << std::setw(12) << T;
+				std::cout << std::setw(12) << LC;
+				std::cout << std::setw(12) << resL;
+				std::cout << std::setw(12) << mL;
+				std::cout << std::setw(12) << mG;
+				std::cout << std::setw(12) << mL + mG;
+				std::cout << std::endl;
+			}
 
 			double P_moles = 0.;
 			double O_moles = 0.;
@@ -190,9 +212,11 @@ public:
 			fDistMass_ << std::setw(16) << LC;
 			fDistMass_ << std::setw(16) << 0.;
 			fDistMass_ << std::setw(16) << resL;
+
 			fDistMass_ << std::setw(16) << mL;
 			fDistMass_ << std::setw(16) << mG;
 			fDistMass_ << std::setw(16) << mL + mG;
+
 			fDistMass_ << std::setw(16) << mas_par;
 			fDistMass_ << std::setw(16) << mas_ole;
 			fDistMass_ << std::setw(16) << mas_dio;
@@ -204,9 +228,11 @@ public:
 			fDistMoles_ << std::setw(16) << LC;
 			fDistMoles_ << std::setw(16) << 0.;
 			fDistMoles_ << std::setw(16) << resL;
+
 			fDistMoles_ << std::setw(16) << nL;
 			fDistMoles_ << std::setw(16) << nG;
 			fDistMoles_ << std::setw(16) << nL + nG;
+
 			fDistMoles_ << std::setw(16) << mol_par;
 			fDistMoles_ << std::setw(16) << mol_ole;
 			fDistMoles_ << std::setw(16) << mol_dio;
