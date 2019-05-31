@@ -138,14 +138,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\source\PolyethyleneKinetics.cpp" />
+    <ClCompile Include="..\..\..\..\source\PolypropyleneKinetics.cpp" />
     <ClCompile Include="..\..\..\..\source\PolystyreneKinetics.cpp" />
     <ClCompile Include="..\..\..\..\source\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\source\Grammar_Polyethylene_Kinetics.h" />
+    <ClInclude Include="..\..\..\..\source\Grammar_Polypropylene_Kinetics.h" />
     <ClInclude Include="..\..\..\..\source\Grammar_Polystyrene_Kinetics.h" />
     <ClInclude Include="..\..\..\..\source\PolyethyleneKinetics.h" />
     <ClInclude Include="..\..\..\..\source\Polyethylene_ODESystem.h" />
+    <ClInclude Include="..\..\..\..\source\PolypropyleneKinetics.h" />
+    <ClInclude Include="..\..\..\..\source\Polypropylene_ODESystem.h" />
     <ClInclude Include="..\..\..\..\source\PolystyreneKinetics.h" />
     <ClInclude Include="..\..\..\..\source\Polystyrene_ODESystem.h" />
     <ClInclude Include="..\..\..\..\source\Utilities.h" />

@@ -55,10 +55,12 @@
 #include "Utilities.h"
 #include "PolystyreneKinetics.h"
 #include "PolyethyleneKinetics.h"
+#include "PolypropyleneKinetics.h"
 #include "ThermogravimetricAnalysis.h"
 
 // Grammar files
 #include "Grammar_Polyethylene_Kinetics.h"
+#include "Grammar_Polypropylene_Kinetics.h"
 #include "Grammar_Polystyrene_Kinetics.h"
 #include "Grammar_InitialDistribution.h"
 
@@ -70,7 +72,7 @@
 // Pointers to kinetics
 opensmokepp::plastics::PolystyreneKinetics*	ptPS;
 opensmokepp::plastics::PolyethyleneKinetics* ptPE;
-
+opensmokepp::plastics::PolypropyleneKinetics* ptPP;
 
 // Folder containing data
 std::string test_folder = "../../../../../data/";
@@ -78,9 +80,9 @@ std::string test_folder = "../../../../../data/";
 
 #include "Polystyrene_ODESystem.h"
 #include "Polyethylene_ODESystem.h"
+#include "Polypropylene_ODESystem.h"
 
 ThermogravimetricAnalysis* tg;
-
 
 
 /*
@@ -593,6 +595,119 @@ int main(int argc, char** argv)
 		if (tg->ode_options().type() == OdeSMOKE::ExplicitOdeSolver_Parameters::ODE_RUNGEKUTTA45)
 		{
 			typedef PE_ODESystemObject ode_system;
+			typedef OdeSMOKE::OdeRungeKutta4th< ode_system, Eigen::VectorXd > Method_RungeKutta4thOrder;
+			typedef OdeSMOKE::OdeRungeKuttaFamily< Eigen::VectorXd, Method_RungeKutta4thOrder> Solver_RungeKutta4thOrder;
+			OdeSMOKE::ODESolverVirtualClass< Eigen::VectorXd, Solver_RungeKutta4thOrder > ode_solver_rk;
+
+			ode_solver_rk.PrepareOutputFiles(tg->options().output_path());
+			ode_solver_rk.SetThermogravimetricAnalysis(tg);
+			ode_solver_rk.SetInitialConditions(n);
+			ode_solver_rk.Solve(0, tg->FinalTime());
+			n = ode_solver_rk.y();
+		}
+		else
+		{
+		}
+	}
+
+	else if (tg->Polymer() == OpenSMOKE::POLYPROPYLENE)
+	{
+		// Initial distribution from input file
+		Eigen::VectorXd y(600001);
+		double wg = 1.;
+		int N = 0;
+		double MW_polymer, MW_monomer;
+		OpenSMOKE::InitialDistributionFromDictionary(input_file_name, initial_distribution_dictionary_name,
+			y, N, MW_polymer, MW_monomer, wg, tg->options().output_path().string());
+
+
+		tg->SetInitialMass(wg);
+
+		// Define polypropylene kinetics
+		opensmokepp::plastics::PolypropyleneKinetics kinetics;
+		ptPP = &kinetics;
+		kinetics.SetVerbose(false);
+		kinetics.SetMaxNumberOfUnits(N);
+		kinetics.SetMolecularWeightPolymer(MW_polymer);
+		kinetics.SetMolecularWeightMonomer(MW_monomer);
+
+		// Boiling temperature table
+		std::cout << std::endl;
+		std::cout << "------------------- -------------" << std::endl;
+		std::cout << "   Boiling Temperature Table     " << std::endl;
+		std::cout << "---------------------------------" << std::endl;
+		std::cout << "   #LC        T(K)        T(C)   " << std::endl;
+		std::cout << "---------------------------------" << std::endl;
+		std::vector<double> list_boiling_temperature;
+		for (int i = 1; i <= 50; i++)
+		{
+			const double Teb = kinetics.BoilingTemperature(i, tg->P(0.));
+			list_boiling_temperature.push_back(Teb);
+			std::cout << std::setw(6) << std::right << i;
+			std::cout << std::setw(12) << std::right << std::setprecision(3) << std::fixed << Teb;
+			std::cout << std::setw(12) << std::right << std::setprecision(3) << std::fixed << Teb - 273.15;
+			std::cout << std::endl;
+		}
+		tg->SetBoilingTemperatureList(list_boiling_temperature);
+		std::cout << "---------------------------------------------------------------" << std::endl;
+		std::cout << std::endl;
+
+		// Additional options for polystyrene kinetics
+		OpenSMOKE::KineticsFromDictionary(input_file_name, kinetics_dictionary_name, kinetics);
+
+		const int rho = kinetics.LiquidDensity(tg->T(0));
+		const int LC = kinetics.MinNumberOfUnits(tg->T(0), tg->P(0));
+		const double Teb = kinetics.BoilingTemperature(LC, tg->P(0));
+
+		Eigen::VectorXd x = y / y.sum();
+		const double Ctot = kinetics.LiquidDensity(tg->T(0)) / kinetics.MolecularWeightMonomer();	// (kmol/m3 or mol/l)
+		Eigen::VectorXd c = Ctot * x;	// (kmol/m3 or mol/l)
+
+		kinetics.SetMinNumberOfUnits(LC);
+
+
+
+		Eigen::VectorXd n = y;
+
+		const double rhoG = kinetics.SumGasMW(c);						// Gaseous density [kg/m3]
+		const double rhoL = kinetics.SumLiquidMW(c);					// Liquid density [kg/m3]
+		const double nG = kinetics.SumGas(n);							// Gaseous-phase moles
+		const double nL = kinetics.SumLiquid(n);						// Liquid-phase moles [mol]
+		const double mG = kinetics.SumGasMW(n);							// Gaseous-phase mass [g]
+		const double mL = kinetics.SumLiquidMW(n);						// Liquid-phase mass [g]
+		const double mTot = mG + mL;										// Total mass [g]
+		const double VL = (mL / 1000.) / kinetics.LiquidDensity(tg->T(0));		// Liquid-phase volume [m3]
+		const double Vtot = (mTot / 1000.) / rho;							// Total volume [m3]
+
+		kinetics.SetStatus(tg->T(0), tg->P(0), c);
+		kinetics.UpdateInitialAccelerationCoefficient(VL*1000., wg);
+		kinetics.KineticConstants();
+		kinetics.FormationRates();
+
+		std::cout << std::endl;
+		std::cout << "---------------------------------------------------------------------" << std::endl;
+		std::cout << " Summary                                                             " << std::endl;
+		std::cout << "---------------------------------------------------------------------" << std::endl;
+		std::cout << " * Polymer MW [g/mol]:    " << MW_polymer << std::endl;
+		std::cout << " * Monomer MW [g/mol]:    " << MW_monomer << std::endl;
+		std::cout << " * Density [kg/m3]:       " << rho << std::endl;
+		std::cout << " * Concentration [mol/l]: " << Ctot << std::endl;
+		std::cout << " * Gas mass fraction:     " << rhoG / (rhoG + rhoL) << std::endl;
+		std::cout << " * Liquid mass fraction:  " << rhoL / (rhoG + rhoL) << std::endl;
+		std::cout << " * Total mass [g]:        " << mTot << std::endl;
+		std::cout << " * Total moles [mol]:     " << y.sum() << std::endl;
+		std::cout << " * Total volume [cm3]:    " << Vtot * 1.e6 << std::endl;
+		std::cout << " * Temperature [K]:       " << tg->T(0) << std::endl;
+		std::cout << " * Temperature [C]:       " << tg->T(0) - 273.15 << std::endl;
+		std::cout << " * Pressure [atm]:        " << tg->P(0) << std::endl;
+		std::cout << " * LC [-]:                " << LC << std::endl;
+		std::cout << "---------------------------------------------------------------------" << std::endl;
+		std::cout << std::endl;
+
+		// Integration of ODE system
+		if (tg->ode_options().type() == OdeSMOKE::ExplicitOdeSolver_Parameters::ODE_RUNGEKUTTA45)
+		{
+			typedef PP_ODESystemObject ode_system;
 			typedef OdeSMOKE::OdeRungeKutta4th< ode_system, Eigen::VectorXd > Method_RungeKutta4thOrder;
 			typedef OdeSMOKE::OdeRungeKuttaFamily< Eigen::VectorXd, Method_RungeKutta4thOrder> Solver_RungeKutta4thOrder;
 			OdeSMOKE::ODESolverVirtualClass< Eigen::VectorXd, Solver_RungeKutta4thOrder > ode_solver_rk;

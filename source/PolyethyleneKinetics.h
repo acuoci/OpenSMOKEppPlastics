@@ -428,7 +428,7 @@ namespace opensmokepp::plastics
 		void UpdateSums(const int J);
 
 
-	private:
+	protected:
 
 		/// @section kinetic_parameters Kinetic parameters
 		/// @brief   Kinetic parameters of polystyrene reactions
@@ -493,7 +493,7 @@ namespace opensmokepp::plastics
 		double kd_;					/*!< Auxiliary kinetic constant */
 		double ka_;					/*!< Auxiliary kinetic constant */
 
-	private:
+	protected:
 
 		static double Rgas_;		/*!< Ideal gas universal constant R (in cal/mol/K) */
 	};

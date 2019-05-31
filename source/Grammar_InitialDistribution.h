@@ -72,8 +72,8 @@ namespace OpenSMOKE
 
 			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@MolecularWeightMonomer",
 				OpenSMOKE::SINGLE_MEASURE,
-				"Monomer molecular weight (default: PS=104, PE=14. g/mol)",
-				false));
+				"Monomer molecular weight (default: PS=104., PE=14., PP=42. g/mol)",
+				true));
 
 			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@Lumping",
 				OpenSMOKE::SINGLE_BOOL,

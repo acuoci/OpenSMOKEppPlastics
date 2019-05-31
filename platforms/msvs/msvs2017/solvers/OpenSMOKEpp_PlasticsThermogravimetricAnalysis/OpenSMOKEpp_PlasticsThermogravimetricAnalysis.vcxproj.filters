@@ -18,9 +18,6 @@
     <ClInclude Include="..\..\..\..\..\source\Grammar_InitialDistribution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\source\Grammar_Kinetics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\source\Grammar_ThermogravimetricAnalysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
