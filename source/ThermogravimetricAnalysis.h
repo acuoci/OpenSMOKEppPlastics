@@ -80,6 +80,8 @@ public:
 
 	int SearchForLC(const double T);
 
+	int SearchForLC(const double T, const double P);
+
 	void SetInitialMass(const double initial_mass) { initial_mass_ = initial_mass; }
 
 	void SetFinallTime(const double tEnd) { tEnd_ = tEnd; }

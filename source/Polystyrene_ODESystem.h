@@ -253,17 +253,15 @@ public:
 			fDistMoles_ << std::endl;
 		}
 
-		const int LCnew = tg_->SearchForLC(T)-1;
+		const int LCnew = tg_->SearchForLC(T,P);
 		const int LCcurrent = ptPS->MinNumberOfUnits();
 		if (LCnew != LCcurrent)
 		{
-			std::cout << LCnew << " " << LCcurrent << std::endl;
-
 			std::cout << std::endl;
 			std::cout << "-----------------------------------------------------" << std::endl;
 			std::cout << " New boiling temperature (in K)                      " << std::endl;
 			std::cout << "-----------------------------------------------------" << std::endl;
-			std::cout << "  * " << tg_->BoilingTemperature(LCcurrent - 1) << " -> " << tg_->BoilingTemperature(LCnew - 1) << std::endl;
+			std::cout << "  * " << tg_->BoilingTemperature(LCcurrent-1) << " -> " << tg_->BoilingTemperature(LCnew-1) << std::endl;
 			std::cout << "-----------------------------------------------------" << std::endl;
 			std::cout << std::endl;
 
@@ -271,6 +269,7 @@ public:
 			ptPS->UpdateSharedSpeciesDistribution(LCnew, n);
 			ptPS->UpdateSharedSpecies(T, P);
 		}
+		
 	}
 
 private:

@@ -64,6 +64,43 @@ int ThermogravimetricAnalysis::SearchForLC(const double T)
 	return 0;
 }
 
+int ThermogravimetricAnalysis::SearchForLC(const double T, const double P)
+{
+	for (int i = 0; i < list_boiling_temperature_.size(); i++)
+		if (list_boiling_temperature_[i] > T)
+		{
+			if (i == 0)
+			{
+				std::cout << "Current temperature [C]: " << T - 273.15 << std::endl;
+				std::cout << "Minimum allowed temperature [C]: " << list_boiling_temperature_[i] - 273.15 << std::endl;
+				FatalErrorMessage("The current temperature is not sufficiently high to have release of gaseous products!");
+			}
+
+			// Boiling temperature
+			const double Tb1 = list_boiling_temperature_[i-1];
+			const double Tb2 = list_boiling_temperature_[i];
+
+			// Modulation interval (TODO)
+			double deltem = 34.;
+			if (P != 1.)
+				deltem = -32. / std::log(P);
+
+			int kd = i;
+			if (std::fabs(T - Tb1) <= deltem)
+				kd = i;
+			else if (std::abs(T - Tb2) <= deltem)
+				kd = i + 1;
+
+			return kd;
+		}
+
+	const int n = list_boiling_temperature_.size() - 1;
+	std::stringstream label; label << list_boiling_temperature_[n];
+	FatalErrorMessage("Fatal error: Maximum allowed temperature is " + label.str());
+
+	return 0;
+}
+
 
 void ThermogravimetricAnalysis::FatalErrorMessage(const std::string message)
 {
