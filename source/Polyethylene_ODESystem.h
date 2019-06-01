@@ -40,6 +40,7 @@ class PE_ODESystemObject
 protected:
 
 	unsigned int number_of_equations_;
+	unsigned int max_index_distribution_;
 
 public:
 
@@ -47,6 +48,7 @@ public:
 	{
 		number_of_equations_ = 3 * ptPE->MaxNumberOfUnits() + 34;
 		step_ = 0;
+		max_index_distribution_ = 100;
 	}
 
 	void SetThermogravimetricAnalysis(ThermogravimetricAnalysis* tg)
@@ -56,55 +58,154 @@ public:
 
 	void PrepareOutputFiles(const boost::filesystem::path& folder_name)
 	{
-		boost::filesystem::path file_name_mass = folder_name / "GasDistributionMass.out";
+		{
+			boost::filesystem::path file_name_mass = folder_name / "GasDistributionMass.out";
 
-		fDistMass_.open(file_name_mass.c_str(), std::ios::out);
-		fDistMass_.setf(std::ios::scientific);
-		fDistMass_ << std::setprecision(6);
-		fDistMass_ << std::left;
+			fDistMass_.open(file_name_mass.c_str(), std::ios::out);
+			fDistMass_.setf(std::ios::scientific);
+			fDistMass_ << std::setprecision(6);
+			fDistMass_ << std::left;
 
-		fDistMass_ << std::setw(7)  << "#(1)";
-		fDistMass_ << std::setw(16) << "time[s](2)";
-		fDistMass_ << std::setw(16) << "T[K](3)";
-		fDistMass_ << std::setw(16) << "LC[-](4)";
-		fDistMass_ << std::setw(16) << "dummy(5)";
-		fDistMass_ << std::setw(16) << "res_liq(6)";
-		fDistMass_ << std::setw(16) << "mass_liq[g](7)";
-		fDistMass_ << std::setw(16) << "mass_gas[g](8)";
-		fDistMass_ << std::setw(16) << "mass_tot[g](9)";
-		fDistMass_ << std::setw(16) << "P_w(10)";
-		fDistMass_ << std::setw(16) << "O_w(11)";
-		fDistMass_ << std::setw(16) << "D_w(12)";
-		fDistMass_ << std::endl;
+			fDistMass_ << std::setw(7) << "#(1)";
+			fDistMass_ << std::setw(16) << "time[s](2)";
+			fDistMass_ << std::setw(16) << "T[K](3)";
+			fDistMass_ << std::setw(16) << "LC[-](4)";
+			fDistMass_ << std::setw(16) << "dummy(5)";
+			fDistMass_ << std::setw(16) << "res_liq(6)";
+			fDistMass_ << std::setw(16) << "mass_liq[g](7)";
+			fDistMass_ << std::setw(16) << "mass_gas[g](8)";
+			fDistMass_ << std::setw(16) << "mass_tot[g](9)";
+			fDistMass_ << std::setw(16) << "P_w(10)";
+			fDistMass_ << std::setw(16) << "O_w(11)";
+			fDistMass_ << std::setw(16) << "D_w(12)";
+			fDistMass_ << std::endl;
+		}
 
+		{
+			boost::filesystem::path file_name_moles = folder_name / "GasDistributionMoles.out";
 
+			fDistMoles_.open(file_name_moles.c_str(), std::ios::out);
+			fDistMoles_.setf(std::ios::scientific);
+			fDistMoles_ << std::setprecision(6);
+			fDistMoles_ << std::left;
 
-		boost::filesystem::path file_name_moles = folder_name / "GasDistributionMoles.out";
+			fDistMoles_ << std::setw(7) << "#(1)";
+			fDistMoles_ << std::setw(16) << "time[s](2)";
+			fDistMoles_ << std::setw(16) << "T[K](3)";
+			fDistMoles_ << std::setw(16) << "LC[-](4)";
+			fDistMoles_ << std::setw(16) << "dummy(5)";
+			fDistMoles_ << std::setw(16) << "res_liq(6)";
+			fDistMoles_ << std::setw(16) << "mol_liq[mol](7)";
+			fDistMoles_ << std::setw(16) << "mol_gas[mol](8)";
+			fDistMoles_ << std::setw(16) << "mol_tot[mol](9)";
+			fDistMoles_ << std::setw(16) << "P_x(10)";
+			fDistMoles_ << std::setw(16) << "O_x(11)";
+			fDistMoles_ << std::setw(16) << "D_x(12)";
+			fDistMoles_ << std::endl;
+		}
 
-		fDistMoles_.open(file_name_moles.c_str(), std::ios::out);
-		fDistMoles_.setf(std::ios::scientific);
-		fDistMoles_ << std::setprecision(6);
-		fDistMoles_ << std::left;
+		{
+			boost::filesystem::path file_name_moles = folder_name / "GasDistributionMass.P.out";
 
-		fDistMoles_ << std::setw(7) << "#(1)";
-		fDistMoles_ << std::setw(16) << "time[s](2)";
-		fDistMoles_ << std::setw(16) << "T[K](3)";
-		fDistMoles_ << std::setw(16) << "LC[-](4)";
-		fDistMoles_ << std::setw(16) << "dummy(5)";
-		fDistMoles_ << std::setw(16) << "res_liq(6)";
-		fDistMoles_ << std::setw(16) << "mol_liq[mol](7)";
-		fDistMoles_ << std::setw(16) << "mol_gas[mol](8)";
-		fDistMoles_ << std::setw(16) << "mol_tot[mol](9)";
-		fDistMoles_ << std::setw(16) << "P_x(10)";
-		fDistMoles_ << std::setw(16) << "O_x(11)";
-		fDistMoles_ << std::setw(16) << "D_x(12)";
-		fDistMoles_ << std::endl;
+			fDistMassP_.open(file_name_moles.c_str(), std::ios::out);
+			fDistMassP_.setf(std::ios::scientific);
+			fDistMassP_ << std::setprecision(6);
+			fDistMassP_ << std::left;
+
+			fDistMassP_ << std::setw(7) << "#(1)";
+			fDistMassP_ << std::setw(16) << "time[s](2)";
+			fDistMassP_ << std::setw(16) << "T[K](3)";
+			fDistMassP_ << std::setw(16) << "LC[-](4)";
+			fDistMassP_ << std::setw(16) << "dummy(5)";
+			fDistMassP_ << std::setw(16) << "res_liq(6)";
+			fDistMassP_ << std::setw(16) << "mass_liq[g](7)";
+			fDistMassP_ << std::setw(16) << "mass_gas[g](8)";
+			fDistMassP_ << std::setw(16) << "mass_tot[g](9)";
+
+			unsigned int count = 10;
+			for (unsigned int i = 0; i < max_index_distribution_; i++)
+			{
+				std::stringstream index; index << i + 1;
+				std::stringstream counter; counter << count;
+				std::string label = "m_P" + index.str() + "[g](" + counter.str() +")";
+				fDistMassP_ << std::setw(16) << label;
+				count++;
+			}
+
+			fDistMassP_ << std::endl;
+		}
+
+		{
+			boost::filesystem::path file_name_moles = folder_name / "GasDistributionMass.O.out";
+
+			fDistMassO_.open(file_name_moles.c_str(), std::ios::out);
+			fDistMassO_.setf(std::ios::scientific);
+			fDistMassO_ << std::setprecision(6);
+			fDistMassO_ << std::left;
+
+			fDistMassO_ << std::setw(7) << "#(1)";
+			fDistMassO_ << std::setw(16) << "time[s](2)";
+			fDistMassO_ << std::setw(16) << "T[K](3)";
+			fDistMassO_ << std::setw(16) << "LC[-](4)";
+			fDistMassO_ << std::setw(16) << "dummy(5)";
+			fDistMassO_ << std::setw(16) << "res_liq(6)";
+			fDistMassO_ << std::setw(16) << "mass_liq[g](7)";
+			fDistMassO_ << std::setw(16) << "mass_gas[g](8)";
+			fDistMassO_ << std::setw(16) << "mass_tot[g](9)";
+
+			unsigned int count = 10;
+			for (unsigned int i = 0; i < max_index_distribution_; i++)
+			{
+				std::stringstream index; index << i + 1;
+				std::stringstream counter; counter << count;
+				std::string label = "m_O" + index.str() + "[g](" + counter.str() + ")";
+				fDistMassO_ << std::setw(16) << label;
+				count++;
+			}
+
+			fDistMassO_ << std::endl;
+		}
+
+		{
+			boost::filesystem::path file_name_moles = folder_name / "GasDistributionMass.D.out";
+
+			fDistMassD_.open(file_name_moles.c_str(), std::ios::out);
+			fDistMassD_.setf(std::ios::scientific);
+			fDistMassD_ << std::setprecision(6);
+			fDistMassD_ << std::left;
+
+			fDistMassD_ << std::setw(7) << "#(1)";
+			fDistMassD_ << std::setw(16) << "time[s](2)";
+			fDistMassD_ << std::setw(16) << "T[K](3)";
+			fDistMassD_ << std::setw(16) << "LC[-](4)";
+			fDistMassD_ << std::setw(16) << "dummy(5)";
+			fDistMassD_ << std::setw(16) << "res_liq(6)";
+			fDistMassD_ << std::setw(16) << "mass_liq[g](7)";
+			fDistMassD_ << std::setw(16) << "mass_gas[g](8)";
+			fDistMassD_ << std::setw(16) << "mass_tot[g](9)";
+
+			unsigned int count = 10;
+			for (unsigned int i = 0; i < max_index_distribution_; i++)
+			{
+				std::stringstream index; index << i + 1;
+				std::stringstream counter; counter << count;
+				std::string label = "m_D" + index.str() + "[g](" + counter.str() + ")";
+				fDistMassD_ << std::setw(16) << label;
+				count++;
+			}
+
+			fDistMassD_ << std::endl;
+		}
 	}
 
 	void CloseOutputFiles()
 	{
 		fDistMass_.close();
 		fDistMoles_.close();
+		fDistMassP_.close();
+		fDistMassO_.close();
+		fDistMassD_.close();
+
 	}
 
 	void GetFunctions(const double t, const Eigen::VectorXd& n, Eigen::VectorXd& dn_over_dx)
@@ -138,9 +239,6 @@ public:
 
 		//if (step_ % 10 == 1)
 		{
-			//	ptPE->UpdateGasDistribution();
-
-
 			const double P = tg_->P(t);
 			const double W = tg_->InitialMass();
 
@@ -206,37 +304,116 @@ public:
 			const double mas_ole = O_mass / T_mass;
 			const double mas_dio = D_mass / T_mass;
 
-			fDistMass_ << std::setw(7)  << step_;
-			fDistMass_ << std::setw(16) << t;
-			fDistMass_ << std::setw(16) << T;
-			fDistMass_ << std::setw(16) << LC;
-			fDistMass_ << std::setw(16) << 0.;
-			fDistMass_ << std::setw(16) << resL;
+			// Mass distribution of paraffins, olefins, and diolefins
+			Eigen::VectorXd Ps;
+			Eigen::VectorXd Os;
+			Eigen::VectorXd Ds;
+			ptPE->DistributionMW(n, Ps, Os, Ds);
 
-			fDistMass_ << std::setw(16) << mL;
-			fDistMass_ << std::setw(16) << mG;
-			fDistMass_ << std::setw(16) << mL + mG;
+			{
+				fDistMass_ << std::setw(7) << step_;
+				fDistMass_ << std::setw(16) << t;
+				fDistMass_ << std::setw(16) << T;
+				fDistMass_ << std::setw(16) << LC;
+				fDistMass_ << std::setw(16) << 0.;
+				fDistMass_ << std::setw(16) << resL;
 
-			fDistMass_ << std::setw(16) << mas_par;
-			fDistMass_ << std::setw(16) << mas_ole;
-			fDistMass_ << std::setw(16) << mas_dio;
-			fDistMass_ << std::endl;
+				fDistMass_ << std::setw(16) << mL;
+				fDistMass_ << std::setw(16) << mG;
+				fDistMass_ << std::setw(16) << mL + mG;
 
-			fDistMoles_ << std::setw(7)  << step_;
-			fDistMoles_ << std::setw(16) << t;
-			fDistMoles_ << std::setw(16) << T;
-			fDistMoles_ << std::setw(16) << LC;
-			fDistMoles_ << std::setw(16) << 0.;
-			fDistMoles_ << std::setw(16) << resL;
+				fDistMass_ << std::setw(16) << mas_par;
+				fDistMass_ << std::setw(16) << mas_ole;
+				fDistMass_ << std::setw(16) << mas_dio;
+				fDistMass_ << std::endl;
+			}
 
-			fDistMoles_ << std::setw(16) << nL;
-			fDistMoles_ << std::setw(16) << nG;
-			fDistMoles_ << std::setw(16) << nL + nG;
+			{
+				fDistMoles_ << std::setw(7) << step_;
+				fDistMoles_ << std::setw(16) << t;
+				fDistMoles_ << std::setw(16) << T;
+				fDistMoles_ << std::setw(16) << LC;
+				fDistMoles_ << std::setw(16) << 0.;
+				fDistMoles_ << std::setw(16) << resL;
 
-			fDistMoles_ << std::setw(16) << mol_par;
-			fDistMoles_ << std::setw(16) << mol_ole;
-			fDistMoles_ << std::setw(16) << mol_dio;
-			fDistMoles_ << std::endl;
+				fDistMoles_ << std::setw(16) << nL;
+				fDistMoles_ << std::setw(16) << nG;
+				fDistMoles_ << std::setw(16) << nL + nG;
+
+				fDistMoles_ << std::setw(16) << mol_par;
+				fDistMoles_ << std::setw(16) << mol_ole;
+				fDistMoles_ << std::setw(16) << mol_dio;
+				fDistMoles_ << std::endl;
+			}
+
+			{
+				fDistMassP_ << std::setw(7) << step_;
+				fDistMassP_ << std::setw(16) << t;
+				fDistMassP_ << std::setw(16) << T;
+				fDistMassP_ << std::setw(16) << LC;
+				fDistMassP_ << std::setw(16) << 0.;
+				fDistMassP_ << std::setw(16) << resL;
+
+				fDistMassP_ << std::setw(16) << mL;
+				fDistMassP_ << std::setw(16) << mG;
+				fDistMassP_ << std::setw(16) << mL + mG;
+
+				const int LC = ptPE->MinNumberOfUnits();
+	
+				for (unsigned int i = 0; i < LC-1; i++)
+					fDistMassP_ << std::setw(16) << Ps(i);
+
+				for (unsigned int i = LC-1; i < max_index_distribution_; i++)
+					fDistMassP_ << std::setw(16) << 0.;
+
+				fDistMassP_ << std::endl;
+			}
+
+			{
+				fDistMassO_ << std::setw(7) << step_;
+				fDistMassO_ << std::setw(16) << t;
+				fDistMassO_ << std::setw(16) << T;
+				fDistMassO_ << std::setw(16) << LC;
+				fDistMassO_ << std::setw(16) << 0.;
+				fDistMassO_ << std::setw(16) << resL;
+
+				fDistMassO_ << std::setw(16) << mL;
+				fDistMassO_ << std::setw(16) << mG;
+				fDistMassO_ << std::setw(16) << mL + mG;
+
+				const int LC = ptPE->MinNumberOfUnits();
+
+				for (unsigned int i = 0; i < LC - 1; i++)
+					fDistMassO_ << std::setw(16) << Os(i);
+
+				for (unsigned int i = LC - 1; i < max_index_distribution_; i++)
+					fDistMassO_ << std::setw(16) << 0.;
+
+				fDistMassO_ << std::endl;
+			}
+
+			{
+				fDistMassD_ << std::setw(7) << step_;
+				fDistMassD_ << std::setw(16) << t;
+				fDistMassD_ << std::setw(16) << T;
+				fDistMassD_ << std::setw(16) << LC;
+				fDistMassD_ << std::setw(16) << 0.;
+				fDistMassD_ << std::setw(16) << resL;
+
+				fDistMassD_ << std::setw(16) << mL;
+				fDistMassD_ << std::setw(16) << mG;
+				fDistMassD_ << std::setw(16) << mL + mG;
+
+				const int LC = ptPE->MinNumberOfUnits();
+
+				for (unsigned int i = 0; i < LC - 1; i++)
+					fDistMassD_ << std::setw(16) << Ds(i);
+
+				for (unsigned int i = LC - 1; i < max_index_distribution_; i++)
+					fDistMassD_ << std::setw(16) << 0.;
+
+				fDistMassD_ << std::endl;
+			}
 		}
 
 		const int LCnew = tg_->SearchForLC(T);
@@ -265,4 +442,7 @@ private:
 
 	std::ofstream fDistMass_;
 	std::ofstream fDistMoles_;
+	std::ofstream fDistMassP_;
+	std::ofstream fDistMassO_;
+	std::ofstream fDistMassD_;
 };

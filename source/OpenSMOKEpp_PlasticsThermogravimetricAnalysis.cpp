@@ -526,7 +526,7 @@ int main(int argc, char** argv)
 		std::cout << "   #LC        T(K)        T(C)   " << std::endl;
 		std::cout << "---------------------------------" << std::endl;
 		std::vector<double> list_boiling_temperature;
-		for (int i = 1; i <= 50; i++)
+		for (int i = 1; i <= 100; i++)
 		{
 			const double Teb = kinetics.BoilingTemperature(i, tg->P(0.));
 			list_boiling_temperature.push_back(Teb);
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 		std::cout << "   #LC        T(K)        T(C)   " << std::endl;
 		std::cout << "---------------------------------" << std::endl;
 		std::vector<double> list_boiling_temperature;
-		for (int i = 1; i <= 50; i++)
+		for (int i = 1; i <= 100; i++)
 		{
 			const double Teb = kinetics.BoilingTemperature(i, tg->P(0.));
 			list_boiling_temperature.push_back(Teb);
