@@ -198,14 +198,14 @@ int main(int argc, char** argv)
 
 		Eigen::VectorXd n = y;
 
-		const double rhoG = kinetics.SumGasMW(c);						// Gaseous density [kg/m3]
-		const double rhoL = kinetics.SumLiquidMW(c);					// Liquid density [kg/m3]
-		const double nG = kinetics.SumGas(n);							// Gaseous-phase moles
-		const double nL = kinetics.SumLiquid(n);						// Liquid-phase moles [mol]
-		const double mG = kinetics.SumGasMW(n);							// Gaseous-phase mass [g]
-		const double mL = kinetics.SumLiquidMW(n);						// Liquid-phase mass [g]
+		const double rhoG = kinetics.SumGasMW(c);							// Gaseous density [kg/m3]
+		const double rhoL = kinetics.LiquidDensity(tg->T(0));				// Liquid density [kg/m3]
+		const double nG = kinetics.SumGas(n);								// Gaseous-phase moles
+		const double nL = kinetics.SumLiquid(n);							// Liquid-phase moles [mol]
+		const double mG = kinetics.SumGasMW(n);								// Gaseous-phase mass [g]
+		const double mL = kinetics.SumLiquidMW(n);							// Liquid-phase mass [g]
 		const double mTot = mG + mL;										// Total mass [g]
-		const double VL = (mL / 1000.) / kinetics.LiquidDensity(tg->T(0));		// Liquid-phase volume [m3]
+		const double VL = (mL / 1000.) / kinetics.LiquidDensity(tg->T(0));	// Liquid-phase volume [m3]
 		const double Vtot = (mTot / 1000.) / rho;							// Total volume [m3]
 
 		kinetics.SetStatus(tg->T(0), tg->P(0), c);
@@ -309,14 +309,14 @@ int main(int argc, char** argv)
 
 		Eigen::VectorXd n = y;
 
-		const double rhoG = kinetics.SumGasMW(c);						// Gaseous density [kg/m3]
-		const double rhoL = kinetics.SumLiquidMW(c);					// Liquid density [kg/m3]
-		const double nG = kinetics.SumGas(n);							// Gaseous-phase moles
-		const double nL = kinetics.SumLiquid(n);						// Liquid-phase moles [mol]
-		const double mG = kinetics.SumGasMW(n);							// Gaseous-phase mass [g]
-		const double mL = kinetics.SumLiquidMW(n);						// Liquid-phase mass [g]
+		const double rhoG = kinetics.SumGasMW(c);							// Gaseous density [kg/m3]
+		const double rhoL = kinetics.LiquidDensity(tg->T(0));				// Liquid density [kg/m3]
+		const double nG = kinetics.SumGas(n);								// Gaseous-phase moles
+		const double nL = kinetics.SumLiquid(n);							// Liquid-phase moles [mol]
+		const double mG = kinetics.SumGasMW(n);								// Gaseous-phase mass [g]
+		const double mL = kinetics.SumLiquidMW(n);							// Liquid-phase mass [g]
 		const double mTot = mG + mL;										// Total mass [g]
-		const double VL = (mL / 1000.) / kinetics.LiquidDensity(tg->T(0));		// Liquid-phase volume [m3]
+		const double VL = (mL / 1000.) / kinetics.LiquidDensity(tg->T(0));	// Liquid-phase volume [m3]
 		const double Vtot = (mTot / 1000.) / rho;							// Total volume [m3]
 
 		kinetics.SetStatus(tg->T(0), tg->P(0), c);

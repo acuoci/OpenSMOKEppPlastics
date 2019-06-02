@@ -130,6 +130,11 @@ namespace opensmokepp::plastics
 		void SetAbb16(const double Abb16) { A_(8) = Abb16; }
 
 
+		/// @brief Sets the temperature exponent for termination reactions
+		/// @param[in] Betat the temperature exponent
+		void SetBetat(const double Betat) { Beta_(2) = Betat; }
+
+
 		/// @brief Sets the activation energy for random-scission reactions
 		/// @param[in] Es the activation energy (in cal/mol)
 		void SetEs(const double Es) { E_(0) = Es; }

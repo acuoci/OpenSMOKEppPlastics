@@ -66,6 +66,11 @@ namespace OpenSMOKE
 				"Termination (	Rsb + Rp -> PE  and  Rp + Rp -> PE): frequency factor (default: 2.5e7 mol,l,s)",
 				false));
 
+			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@Betat",
+				OpenSMOKE::SINGLE_DOUBLE,
+				"Termination (	Rsb + Rp -> PE  and  Rp + Rp -> PE): temperature exponent (default: 1)",
+				false));
+
 			AddKeyWord(OpenSMOKE::OpenSMOKE_DictionaryKeyWord("@Et",
 				OpenSMOKE::SINGLE_MEASURE,
 				"Termination (	Rsb + Rp -> PE  and  Rp + Rp -> PE): activation energy (default: 6000. cal/mol)",
@@ -175,10 +180,28 @@ namespace OpenSMOKE
 			kinetics.SetEs(opensmokepp::plastics::ConversionActivationEnergy(value, units));
 		}
 
+		if (dictionaries(dictionary_name).CheckOption("@Aa") == true)
+		{
+			dictionaries(dictionary_name).ReadMeasure("@Aa", value, units);
+			kinetics.SetAa(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
+		}
+
+		if (dictionaries(dictionary_name).CheckOption("@Ea") == true)
+		{
+			dictionaries(dictionary_name).ReadMeasure("@Ea", value, units);
+			kinetics.SetEa(opensmokepp::plastics::ConversionActivationEnergy(value, units));
+		}
+
 		if (dictionaries(dictionary_name).CheckOption("@At") == true)
 		{
 			dictionaries(dictionary_name).ReadMeasure("@At", value, units);
 			kinetics.SetAt(opensmokepp::plastics::ConversionFrequencyFactor(value, units));
+		}
+
+		if (dictionaries(dictionary_name).CheckOption("@Betat") == true)
+		{
+			dictionaries(dictionary_name).ReadDouble("@Betat", value);
+			kinetics.SetBetat(value);
 		}
 
 		if (dictionaries(dictionary_name).CheckOption("@Et") == true)
