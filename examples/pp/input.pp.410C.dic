@@ -1,0 +1,51 @@
+//-----------------------------------------------------------------//
+//     ____                    ______ __  __  ____  _  ________    //
+//    / __ \                  /  ___ |  \/  |/ __ \| |/ /  ____|   //
+//   | |  | |_ __   ___ _ __ |  (___ | \  / | |  | | ' /| |__      //
+//   | |  | | '_ \ / _ \ '_ \ \___  \| |\/| | |  | |  < |  __|     //
+//   | |__| | |_) |  __/ | | |____)  | |  | | |__| | . \| |____    //
+//    \____/| .__/ \___|_| |_|______/|_|  |_|\____/|_|\_\______|   //
+//         | |                                                     //
+//         |_|                                                     //
+//                                                                 //
+//                http://www.opensmoke.polimi.it/                  //
+//             http://creckmodeling.chem.polimi.it/                //
+//-----------------------------------------------------------------//
+
+Dictionary ThermogravimetricAnalysis
+{
+	@PolymerType		polypropylene;
+		
+	@Temperature		410 C;
+	@Pressure			1   atm;
+	@EndTime			120 min;
+		
+	//@TemperatureProfile	T-Profile;
+	//@TemperatureSlope		100 C/min;
+		
+	@Options			options;
+	@OdeParameters		ode-parameters;		
+}
+
+Dictionary InitialDistribution
+{
+	@Threshold				1e-2;
+	@MolecularWeightMonomer	42.   g/mol;
+	@MolecularWeightPolymer	5000. g/mol;
+}
+
+Dictionary options
+{
+	@OutputFolder		Output.pp.410C;
+}
+
+Dictionary ode-parameters
+{
+	@AbsoluteTolerance	1e-12;
+	@RelativeTolerance	1e-7;
+}
+
+Dictionary Kinetics
+{
+	@InitialAccelerationCorrection true;
+}

@@ -1,0 +1,54 @@
+//-----------------------------------------------------------------//
+//     ____                    ______ __  __  ____  _  ________    //
+//    / __ \                  /  ___ |  \/  |/ __ \| |/ /  ____|   //
+//   | |  | |_ __   ___ _ __ |  (___ | \  / | |  | | ' /| |__      //
+//   | |  | | '_ \ / _ \ '_ \ \___  \| |\/| | |  | |  < |  __|     //
+//   | |__| | |_) |  __/ | | |____)  | |  | | |__| | . \| |____    //
+//    \____/| .__/ \___|_| |_|______/|_|  |_|\____/|_|\_\______|   //
+//         | |                                                     //
+//         |_|                                                     //
+//                                                                 //
+//                http://www.opensmoke.polimi.it/                  //
+//             http://creckmodeling.chem.polimi.it/                //
+//-----------------------------------------------------------------//
+
+Dictionary ThermogravimetricAnalysis
+{
+		@PolymerType		polyethylene;
+		
+		@Temperature		500 C;
+		@Pressure			1 atm;
+		@EndTime			3 min;
+		
+		@TemperatureSlope		100 C/min;
+}
+
+Dictionary InitialDistribution
+{
+		@Threshold				1e-2;
+		@MolecularWeightPolymer	5000 g/mol;
+}
+
+Dictionary Kinetics
+{
+		@Es		78000	cal/mol;
+		@Ea		68000	cal/mol;	
+		
+		@InitialAccelerationCorrection true;
+}
+
+Dictionary T-Profile
+{	
+		@XVariable time;
+		@YVariable temperature;
+		
+		@XUnits s;
+		@YUnits K;
+		
+		@Profile
+		0    873.15
+		0.3  873.15
+		1.0  873.15
+		1.1  873.15;		
+}
+

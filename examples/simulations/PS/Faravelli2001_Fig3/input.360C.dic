@@ -1,0 +1,96 @@
+//-----------------------------------------------------------------//
+//     ____                    ______ __  __  ____  _  ________    //
+//    / __ \                  /  ___ |  \/  |/ __ \| |/ /  ____|   //
+//   | |  | |_ __   ___ _ __ |  (___ | \  / | |  | | ' /| |__      //
+//   | |  | | '_ \ / _ \ '_ \ \___  \| |\/| | |  | |  < |  __|     //
+//   | |__| | |_) |  __/ | | |____)  | |  | | |__| | . \| |____    //
+//    \____/| .__/ \___|_| |_|______/|_|  |_|\____/|_|\_\______|   //
+//         | |                                                     //
+//         |_|                                                     //
+//                                                                 //
+//                http://www.opensmoke.polimi.it/                  //
+//             http://creckmodeling.chem.polimi.it/                //
+//-----------------------------------------------------------------//
+
+Dictionary ThermogravimetricAnalysis
+{
+		@PolymerType		polystyrene;
+		
+		@Temperature		360 C;
+		@Pressure			1 atm;
+		@EndTime			10000 s;
+		
+		//@TemperatureProfile	T-Profile;
+		//@TemperatureSlope 		0 C/s;
+		
+		@Options			options;
+		@OdeParameters		ode-parameters;
+}
+
+Dictionary InitialDistribution
+{
+		@Type						Schultz-Flory;
+		@Threshold					1e-3;
+		@StretchingFactor			20;
+
+		@MolecularWeightMonomer		104	   g/mol;
+		@MolecularWeightPolymer		186000 g/mol;
+		
+		@Lumping					true;
+		@LumpingStart				100;
+		@LumpingStep				10;
+}
+
+Dictionary options
+{
+	@OutputFolder		Output.360C;
+	@StepsVideo			10;
+	@StepsFile			 5;
+}
+
+Dictionary ode-parameters
+{
+	@AbsoluteTolerance	1e-12;
+	@RelativeTolerance	1e-7;
+}
+
+Dictionary Kinetics
+{
+		@RightSideBetaScissions			false;
+		
+		@BackBiting						true;
+		
+		@RandomScissionEfficiency		0.01;
+		
+		@AbstractionReactionWeights		0. 	1. 	0.; 
+		
+		@As		5e13	mol,l,s;
+		@Es		67500	cal/mol;
+		
+		@Aa		5e12	mol,l,s;
+		@Ea		62500	cal/mol;
+		
+		@At		5e6		mol,l,s;
+		@Et		14000	cal/mol;
+		
+		@Ar		5e7		mol,l,s;
+		@Er		16500	cal/mol;
+		
+		@Ar1	5e7		mol,l,s;
+		@Er1	8500	cal/mol;
+		
+		@Ar2	5e7		mol,l,s;
+		@Er2	13500	cal/mol;
+		
+		@Ar3	5e7		mol,l,s;
+		@Er3	16500	cal/mol;
+		
+		@Au		1e13	mol,l,s;
+		@Eu		26000	cal/mol;
+		
+		@Abb	1e9		mol,l,s;
+		@Ebb	16000	cal/mol;
+		
+		@Abeta	1e13	mol,l,s;
+		@Ebeta	27000	cal/mol;	
+}

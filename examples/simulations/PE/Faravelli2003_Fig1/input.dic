@@ -1,0 +1,81 @@
+//-----------------------------------------------------------------//
+//     ____                    ______ __  __  ____  _  ________    //
+//    / __ \                  /  ___ |  \/  |/ __ \| |/ /  ____|   //
+//   | |  | |_ __   ___ _ __ |  (___ | \  / | |  | | ' /| |__      //
+//   | |  | | '_ \ / _ \ '_ \ \___  \| |\/| | |  | |  < |  __|     //
+//   | |__| | |_) |  __/ | | |____)  | |  | | |__| | . \| |____    //
+//    \____/| .__/ \___|_| |_|______/|_|  |_|\____/|_|\_\______|   //
+//         | |                                                     //
+//         |_|                                                     //
+//                                                                 //
+//                http://www.opensmoke.polimi.it/                  //
+//             http://creckmodeling.chem.polimi.it/                //
+//-----------------------------------------------------------------//
+
+Dictionary ThermogravimetricAnalysis
+{
+	@PolymerType			polyethylene;
+		
+	@Temperature			360 C;
+	@Pressure				1  atm;
+	@EndTime				16 min;
+		
+	//@TemperatureProfile	T-Profile;
+	@TemperatureSlope		10 C/min;
+		
+	@Options				options;
+	@OdeParameters			ode-parameters;		
+}
+
+Dictionary InitialDistribution
+{
+	@Threshold				1e-2;
+	@MolecularWeightMonomer	14.    g/mol;
+	@MolecularWeightPolymer	84000. g/mol;
+}
+
+Dictionary options
+{
+	@OutputFolder		Output;
+}
+
+Dictionary ode-parameters
+{
+	@AbsoluteTolerance	1e-12;
+	@RelativeTolerance	1e-7;
+}
+
+Dictionary Kinetics
+{		
+	@As		7.94328e14	mol,l,s;
+	@Es		78000		cal/mol;
+	
+	@Aa		4e13		mol,l,s;
+	@Ea		68000		cal/mol;
+	
+	@At		2.5e7		mol,l,s;
+	@Et		6000		cal/mol;
+	@Betat	1.;	
+	
+	@Aaf	4.74341e8	mol,l,s;
+	@Eaf	12000		cal/mol;
+	
+	@Aab	4.74341e8	mol,l,s;
+	@Eab	13500		cal/mol;
+	
+	@Abeta	1.25892e14	mol,l,s;
+	@Ebeta	30500		cal/mol;
+	
+	@Abb14	1e11		mol,l,s;
+	@Ebb14	20600		cal/mol;
+	
+	@Abb15	1.6e10		mol,l,s;
+	@Ebb15	14500		cal/mol;
+	
+	@Abb16	5e9			mol,l,s;
+	@Ebb16	14500		cal/mol;
+	
+	@InitialAccelerationCorrection true;
+	@Cbutane	2;
+	@Cpropane	2;
+}
