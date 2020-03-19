@@ -21,9 +21,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{b19eb59a-1c05-4eff-99d7-12a1452a27d7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -45,7 +45,7 @@
     <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;;C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\test\gtest\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\msvs2017\msvs2017.vcxproj">
+    <ProjectReference Include="..\msvs2019\msvs2019.vcxproj">
       <Project>{873c88c6-5ff7-4f16-8ce1-1ab0458958ea}</Project>
     </ProjectReference>
   </ItemGroup>

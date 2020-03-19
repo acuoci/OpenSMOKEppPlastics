@@ -20,36 +20,38 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{873C88C6-5FF7-4F16-8CE1-1AB0458958EA}</ProjectGuid>
-    <RootNamespace>msvs2017</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{7C78E02A-3F79-40D7-9411-4AF8EF7C2B18}</ProjectGuid>
+    <RootNamespace>OpenSMOKEppPlastics</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseIntelMKL>Sequential</UseIntelMKL>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -69,32 +71,35 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\..\lib\msvs\msvs2017\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\..\lib\msvs\msvs2017\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;$(IncludePath)</IncludePath>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;..\..\..\..\source;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\include;C:\Development\ExternalNumericalLibraries\OdeSMOKE\src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\..\..\lib\msvs\msvs2017\$(Platform)\$(Configuration)\</OutDir>
-    <TargetExt>.lib</TargetExt>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;..\..\..\..\source;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Development\ExternalNumericalLibraries\OdeSMOKE\src;C:\Program Files (x86)\IntelSWTools\compilers_and_libraries\windows\mkl\include</IncludePath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\..\..\lib\msvs\msvs2017\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_69_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
-  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/std:c++17 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\..\..\..\lib\msvs\msvs2019\x64\Release;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared\stage\lib-msvs2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>msvs2019.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/std:c++17 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -105,6 +110,10 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/std:c++17 /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\..\..\..\..\lib\msvs\msvs2019\x64\Debug;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared\stage\lib-msvs2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>msvs2019.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -114,22 +123,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/std:c++17 %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-    <Link>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/std:c++17 /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -137,22 +130,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\source\PolyethyleneKinetics.cpp" />
-    <ClCompile Include="..\..\..\..\source\PolypropyleneKinetics.cpp" />
-    <ClCompile Include="..\..\..\..\source\PolystyreneKinetics.cpp" />
-    <ClCompile Include="..\..\..\..\source\Utilities.cpp" />
+    <ClInclude Include="..\..\..\..\..\source\ExplicitOdeSolver_Parameters.h" />
+    <ClInclude Include="..\..\..\..\..\source\ExplicitOdeSolver_Parameters.hpp" />
+    <ClInclude Include="..\..\..\..\..\source\Grammar_ExplicitOdeSolver_Parameters.h" />
+    <ClInclude Include="..\..\..\..\..\source\Grammar_InitialDistribution.h" />
+    <ClInclude Include="..\..\..\..\..\source\Grammar_ThermogravimetricAnalysis.h" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis.h" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis.hpp" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis_Options.h" />
+    <ClInclude Include="..\..\..\..\..\source\ThermogravimetricAnalysis_Options.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\source\Grammar_Polyethylene_Kinetics.h" />
-    <ClInclude Include="..\..\..\..\source\Grammar_Polypropylene_Kinetics.h" />
-    <ClInclude Include="..\..\..\..\source\Grammar_Polystyrene_Kinetics.h" />
-    <ClInclude Include="..\..\..\..\source\PolyethyleneKinetics.h" />
-    <ClInclude Include="..\..\..\..\source\Polyethylene_ODESystem.h" />
-    <ClInclude Include="..\..\..\..\source\PolypropyleneKinetics.h" />
-    <ClInclude Include="..\..\..\..\source\Polypropylene_ODESystem.h" />
-    <ClInclude Include="..\..\..\..\source\PolystyreneKinetics.h" />
-    <ClInclude Include="..\..\..\..\source\Polystyrene_ODESystem.h" />
-    <ClInclude Include="..\..\..\..\source\Utilities.h" />
+    <ClCompile Include="..\..\..\..\..\source\OpenSMOKEpp_PlasticsThermogravimetricAnalysis.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

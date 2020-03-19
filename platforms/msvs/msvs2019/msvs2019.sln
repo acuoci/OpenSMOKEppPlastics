@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msvs2017", "msvs2017\msvs2017.vcxproj", "{873C88C6-5FF7-4F16-8CE1-1AB0458958EA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msvs2019", "msvs2019\msvs2019.vcxproj", "{873C88C6-5FF7-4F16-8CE1-1AB0458958EA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test-google", "test-google\test-google.vcxproj", "{B19EB59A-1C05-4EFF-99D7-12A1452A27D7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{521E8904-6753-4632-86DE-5B75181D564E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenSMOKEpp_PlasticsThermogravimetricAnalysis", "solvers\OpenSMOKEpp_PlasticsThermogravimetricAnalysis\OpenSMOKEpp_PlasticsThermogravimetricAnalysis.vcxproj", "{7C78E02A-3F79-40D7-9411-4AF8EF7C2B18}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenSMOKEpp_Plastics", "solvers\OpenSMOKEpp_Plastics\OpenSMOKEpp_Plastics.vcxproj", "{7C78E02A-3F79-40D7-9411-4AF8EF7C2B18}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Polyethylene", "Test_Polyethylene\Test_Polyethylene.vcxproj", "{C8EA6316-58FA-45C6-B5F5-0F9D1E5ACD07}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test-polyethylene", "test-polyethylene\test-polyethylene.vcxproj", "{C8EA6316-58FA-45C6-B5F5-0F9D1E5ACD07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

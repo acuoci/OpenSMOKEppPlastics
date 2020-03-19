@@ -1,1 +1,1 @@
-C:\Users\acuoci\Documents\GitHub\OpenSMOKEppPlastics\platforms\msvs\msvs2017\x64\Release\OpenSMOKEpp_PlasticsThermogravimetricAnalysis.exe --input input.ps.370C.dic
+..\..\platforms\msvs\msvs2019\x64\Release\OpenSMOKEpp_Plastics.exe --input input.ps.370C.dic

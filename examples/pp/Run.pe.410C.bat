@@ -1,1 +1,1 @@
-"C:\Users\acuoci\OneDrive - Politecnico di Milano\My Projects\GitHub\OpenSMOKEppPlastics\platforms\msvs\msvs2017\x64\Release\OpenSMOKEpp_PlasticsThermogravimetricAnalysis.exe" --input input.pe.410C.dic
+..\..\platforms\msvs\msvs2019\x64\Release\OpenSMOKEpp_Plastics.exe --input input.pe.410C.dic
