@@ -10,6 +10,9 @@
 *.VC.db-*
 *advixe*
 
+#Output files
+*.out
+
 #Autotools
 #########################
 platforms/linux/Makefile
