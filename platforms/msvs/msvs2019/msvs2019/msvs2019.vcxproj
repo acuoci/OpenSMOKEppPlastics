@@ -82,11 +82,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\..\..\lib\msvs\msvs2019\$(Platform)\$(Configuration)\</OutDir>
     <TargetExt>.lib</TargetExt>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\..\..\lib\msvs\msvs2019\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;C:\Development\OpenSMOKEpp\OpenSMOKEpp\source;C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

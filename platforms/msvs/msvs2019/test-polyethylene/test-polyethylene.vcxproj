@@ -70,10 +70,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;..\..\..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;..\..\..\..\source;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\..\..\source</IncludePath>
+    <IncludePath>C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(VC_IncludePath);$(WindowsSDK_IncludePath);..\..\..\..\source</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Development\ExternalNumericalLibraries\Boost\boost_1_72_0_shared;C:\Development\ExternalNumericalLibraries\RapidXML\rapidxml-1.13;C:\Development\ExternalNumericalLibraries\Eigen\Eigen3.3;$(IncludePath)</IncludePath>
