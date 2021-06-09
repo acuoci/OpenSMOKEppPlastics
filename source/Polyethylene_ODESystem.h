@@ -214,13 +214,17 @@ public:
 		const double P = tg_->P(t);
 		const double W = tg_->InitialMass();
 
-		const double nG = ptPE->SumGas(n);							// mol
-		const double nL = ptPE->SumLiquid(n);						// mol
-		const double mG = ptPE->SumGasMW(n);						// g
-		const double mL = ptPE->SumLiquidMW(n);						// g
+		Eigen::VectorXd n_(n.size());
+		for (unsigned int i = 0; i < n.size(); i++)
+			n_(i) = std::max(0., n(i));
+
+		const double nG = ptPE->SumGas(n_);							// mol
+		const double nL = ptPE->SumLiquid(n_);						// mol
+		const double mG = ptPE->SumGasMW(n_);						// g
+		const double mL = ptPE->SumLiquidMW(n_);						// g
 		const double VL = (mL / 1000.) / ptPE->LiquidDensity(T);	// m3
 
-		c_ = n / (VL*1000.);		// concentrations (in kmol/m3 or mol/l)
+		c_ = n_ / (VL*1000.);		// concentrations (in kmol/m3 or mol/l)
 
 		ptPE->SetStatus(T, P, c_);
 		ptPE->UpdateInitialAccelerationCoefficient(VL*1000., W);
